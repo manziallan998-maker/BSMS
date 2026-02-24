@@ -1,9 +1,4 @@
-// BSMS TITAN - PROFESSIONAL EDITION V8.0
-// EVERY function has REAL code! EVERY button WORKS!
-// FIXED: Duplicate functions removed
-// FIXED: Syntax errors corrected
-// FIXED: All buttons working properly
-// Designed by Allan + Mom + DeepSeek - The Dream Team! 🇷🇼
+
 
 // ==================== DATABASE INITIALIZATION ====================
 let db = {
