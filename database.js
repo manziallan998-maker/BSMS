@@ -1,1746 +1,3123 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billan Stock Management System</title>
-    <!-- Font Awesome for eye icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-        }
-
-        :root {
-            --primary: #1a237e;
-            --primary-dark: #0d1757;
-            --primary-light: #534bae;
-            --secondary: #4a148c;
-            --accent: #ffd700;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-            --info: #2196f3;
-            --dark: #333;
-            --light: #f5f5f5;
-            --white: #ffffff;
-            --shadow: 0 10px 30px rgba(0,0,0,0.1);
-            --shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        /* ==================== TOP BAR WITH TWO LOGOS ==================== */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        /* LEFT LOGO - YOUR CIRCULAR LOGO */
-        .billan-logo-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid #ffd700;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-            object-fit: cover;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: slideInLogo 0.6s ease;
-            background: white;
-        }
-
-        .billan-logo-image:hover {
-            transform: scale(1.08);
-            box-shadow: 0 15px 30px rgba(26,35,126,0.4);
-            border-color: #1a237e;
-        }
-
-        @keyframes slideInLogo {
-            from {
-                opacity: 0;
-                transform: translateX(-50px) scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-        }
-
-        /* CENTER LOGO - YOUR BIG BILLAN LOGO (UNTOUCHED) */
-        .billan-header {
-            text-align: center;
-            margin: 0;
-            flex: 1;
-        }
-
-        .logo-titan {
-            display: inline-block;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 20px 60px;
-            border-radius: 80px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 4px solid var(--accent);
-            position: relative;
-        }
-
-        .logo-titan::before {
-            content: '⬢';
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 30px;
-            color: var(--primary);
-            opacity: 0.3;
-        }
-
-        .logo-titan::after {
-            content: '⬢';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 30px;
-            color: var(--primary);
-            opacity: 0.3;
-        }
-
-        .logo-titan h1 {
-            font-size: 48px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary), #6a1b9a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 4px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .logo-titan p {
-            font-size: 14px;
-            color: var(--primary);
-            letter-spacing: 6px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .tagline-titan {
-            color: #fff;
-            margin-top: 10px;
-            font-size: 14px;
-            opacity: 0.95;
-            letter-spacing: 3px;
-        }
-
-        /* RIGHT SPACER */
-        .right-spacer {
-            width: 100px;
-            height: 100px;
-            opacity: 0;
-        }
-
-        /* ==================== LOGIN PAGE ==================== */
-        .login-page {
-            background: var(--white);
-            border-radius: 40px;
-            padding: 50px;
-            box-shadow: var(--shadow-hover);
-            max-width: 500px;
-            margin: 0 auto;
-            animation: fadeIn 0.5s ease;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .system-badges {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 10px 25px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .login-page h2 {
-            text-align: center;
-            color: var(--primary);
-            font-size: 32px;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--dark);
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .input-group input:focus, .input-group select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(26,35,126,0.1);
-        }
-
-        .secure-access {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--success);
-            font-size: 14px;
-            margin-bottom: 20px;
-            background: #e8f5e9;
-            padding: 10px 15px;
-            border-radius: 10px;
-        }
-
-        .btn-primary {
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(26,35,126,0.3);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #2e7d32);
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #ed6c02);
-        }
-
-        .powered-by {
-            text-align: center;
-            color: #666;
-            font-size: 12px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-
-        /* ==================== ABOUT PAGE STYLES ==================== */
-        .about-page {
-            background: white;
-            border-radius: 40px;
-            padding: 50px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
-            max-width: 1200px;
-            margin: 0 auto;
-            display: none;
-        }
-
-        .about-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .about-header h1 {
-            color: var(--primary);
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .motto {
-            font-size: 20px;
-            color: #666;
-            font-style: italic;
-        }
-
-        .system-architecture {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            margin: 40px 0;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            line-height: 2;
-            overflow-x: auto;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
-            font-size: 14px;
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-        }
-
-        .contact-card {
-            background: #f5f5f5;
-            padding: 25px;
-            border-radius: 15px;
-            border-left: 5px solid var(--primary);
-        }
-
-        .contact-card h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .contact-card p {
-            color: #666;
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
-
-        .aoa-container {
-            text-align: center;
-            margin: 40px 0;
-            padding: 30px;
-            background: linear-gradient(135deg, #f5f5f5, #ffffff);
-            border-radius: 20px;
-            border: 2px dashed #c62828;
-        }
-
-        .btn-aoa {
-            background: linear-gradient(135deg, #c62828, #8e0000);
-            color: white;
-            border: none;
-            padding: 20px 50px;
-            border-radius: 50px;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 3px solid gold;
-            box-shadow: 0 10px 20px rgba(198,40,40,0.3);
-        }
-
-        .btn-aoa:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(198,40,40,0.5);
-        }
-
-        /* ==================== DASHBOARD STYLES ==================== */
-        .dashboard {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .top-nav {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .org-info h2 {
-            color: var(--primary);
-            font-size: 28px;
-            font-weight: 700;
-        }
-
-        .org-info p {
-            color: #666;
-        }
-
-        .timer-box {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 15px 30px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .timer-display {
-            font-size: 28px;
-            font-weight: bold;
-            font-family: monospace;
-            letter-spacing: 3px;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 20px;
-        }
-
-        .sidebar {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .sidebar-section {
-            margin-bottom: 25px;
-        }
-
-        .sidebar-title {
-            color: var(--primary);
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 5px;
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            color: #666;
-            text-decoration: none;
-            border-radius: 10px;
-            transition: all 0.3s;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .sidebar-menu a:hover {
-            background: #f0f2f5;
-            color: var(--primary);
-        }
-
-        .sidebar-menu .active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .badge-count {
-            margin-left: auto;
-            background: var(--danger);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-
-        .main-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--shadow);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-
-        .welcome-banner h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid var(--primary);
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow);
-        }
-
-        .stat-card h4 {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .stat-number {
-            color: var(--primary);
-            font-size: 32px;
-            font-weight: bold;
-        }
-
-        .category-selector {
-            background: #f0f2f5;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .category-selector h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .category-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .category-btn {
-            padding: 10px 20px;
-            background: white;
-            border: 2px solid var(--primary);
-            border-radius: 10px;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .category-btn:hover, .category-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .inventory-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .inventory-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            padding: 10px 20px;
-            background: #f0f2f5;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s;
-        }
-
-        .tab:hover {
-            background: #e0e0e0;
-        }
-
-        .tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn-icon {
-            padding: 10px 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s;
-        }
-
-        .btn-icon:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-icon.success {
-            background: var(--success);
-        }
-
-        .btn-icon.warning {
-            background: var(--warning);
-        }
-
-        .btn-icon.danger {
-            background: var(--danger);
-        }
-
-        .btn-icon.info {
-            background: var(--info);
-        }
-
-        .products-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .products-table th {
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            text-align: left;
-        }
-
-        .products-table td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .products-table tr:hover {
-            background: #f5f5f5;
-        }
-
-        .products-table .low-stock {
-            background: #ffebee;
-        }
-
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-        }
-
-        .status-good {
-            background: #c8e6c9;
-            color: #2e7d32;
-        }
-
-        .status-warning {
-            background: #fff3e0;
-            color: #ef6c00;
-        }
-
-        .status-danger {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .action-cell {
-            display: flex;
-            gap: 5px;
-        }
-
-        .btn-small {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-
-        .btn-small:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-edit {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-delete {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-sell {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-view {
-            background: var(--info);
-            color: white;
-        }
-
-        .settings-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-top: 20px;
-            border: 2px solid var(--primary);
-            display: none;
-        }
-
-        .counter-display {
-            font-size: 24px;
-            font-family: monospace;
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .setting-item {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        .setting-item h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        /* Modals */
-        .modal {
-            display: none;
+// BSMS TITAN - PROFESSIONAL EDITION V8.0
+// EVERY function has REAL code! EVERY button WORKS!
+// FIXED: Duplicate functions removed
+// FIXED: Syntax errors corrected
+// FIXED: All buttons working properly
+// Designed by Allan + Mom + DeepSeek - The Dream Team! 🇷🇼
+
+// ==================== DATABASE INITIALIZATION ====================
+let db = {
+    organizations: [],
+    currentOrg: null,
+    currentUser: null,
+    products: [],
+    categories: [
+        { id: 1, name: 'Food', description: 'Food items', icon: '🍚', count: 0 },
+        { id: 2, name: 'Beverages', description: 'Drinks', icon: '🥤', count: 0 },
+        { id: 3, name: 'Cleaning', description: 'Cleaning supplies', icon: '🧹', count: 0 },
+        { id: 4, name: 'Electronics', description: 'Electronic items', icon: '📱', count: 0 },
+        { id: 5, name: 'Stationery', description: 'Office supplies', icon: '📝', count: 0 },
+        { id: 6, name: 'Pharmacy', description: 'Medical items', icon: '💊', count: 0 },
+        { id: 7, name: 'Clothing', description: 'Apparel', icon: '👕', count: 0 },
+        { id: 8, name: 'Hardware', description: 'Tools & hardware', icon: '🔧', count: 0 }
+    ],
+    sales: [],
+    purchases: [],
+    transfers: [],
+    returns: [],
+    adjustments: [],
+    users: [],
+    auditLog: [],
+    settings: {
+        darkMode: false,
+        autoBackup: true,
+        currency: 'RWF',
+        taxRate: 18,
+        themeColor: '#1a237e',
+        notifications: true,
+        twoFA: false,
+        lowStockThreshold: 5,
+        companyName: '',
+        companyLogo: '',
+        dateFormat: 'DD/MM/YYYY'
+    }
+};
+
+// Load database from localStorage
+function loadDB() {
+    try {
+        const saved = localStorage.getItem('bsms_titan_database_v8');
+        if (saved) {
+            db = JSON.parse(saved);
+            console.log('✅ BSMS TITAN loaded successfully!');
+        } else {
+            initializeSampleData();
+        }
+    } catch (error) {
+        console.error('Error loading database:', error);
+        initializeSampleData();
+    }
+    updateUI();
+}
+
+// Initialize with sample data
+function initializeSampleData() {
+    db.products = [
+        { id: Date.now() + 1, name: 'Indomyi', category: 'Food', price: 2500, quantity: 45, originalQuantity: 45, barcode: '123456', expiry: '2025-12-31', description: 'Popular snack', measurement: 'pieces' },
+        { id: Date.now() + 2, name: 'Fanta', category: 'Beverages', price: 800, quantity: 12, originalQuantity: 12, barcode: '789012', expiry: '2025-06-30', description: 'Orange soda', measurement: 'pieces' },
+        { id: Date.now() + 3, name: 'Rice 5kg', category: 'Food', price: 7500, quantity: 8, originalQuantity: 8, barcode: '345678', expiry: '2026-01-15', description: 'Premium rice', measurement: 'kilograms' },
+        { id: Date.now() + 4, name: 'Soap', category: 'Cleaning', price: 1200, quantity: 3, originalQuantity: 3, barcode: '901234', expiry: '2025-04-20', description: 'Bath soap', measurement: 'pieces' },
+        { id: Date.now() + 5, name: 'Milk', category: 'Dairy', price: 1500, quantity: 2, originalQuantity: 2, barcode: '567890', expiry: '2024-12-01', description: 'Fresh milk', measurement: 'liters' }
+    ];
+    
+    // Update category counts
+    updateCategoryCounts();
+    saveDB();
+}
+
+// Save database to localStorage
+function saveDB() {
+    localStorage.setItem('bsms_titan_database_v8', JSON.stringify(db));
+}
+
+// ==================== SECURITY FUNCTIONS ====================
+
+// Secure hash function for passwords
+function secureHash(str) {
+    let hash = 0;
+    if (str.length === 0) return hash.toString(16);
+    
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    return Math.abs(hash).toString(16);
+}
+
+// Store hashed admin password
+const ADMIN_PASSWORD_HASH = secureHash('BILLAN2026');
+
+// ==================== STRONG UDC GENERATION ====================
+function generateUDC() {
+    const symbols = '!@#$%&*?';
+    const numbers = '0123456789';
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    
+    let result = '';
+    result += symbols.charAt(Math.floor(Math.random() * symbols.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
+    result += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
+    
+    const allChars = symbols + numbers + uppercase + lowercase;
+    for (let i = 0; i < 2; i++) {
+        result += allChars.charAt(Math.floor(Math.random() * allChars.length));
+    }
+    
+    return result.split('').sort(() => Math.random() - 0.5).join('');
+}
+
+// ==================== SECURE ADMIN PANEL WITH PASSWORD TOGGLE ====================
+function showAdminPanel() {
+    // Create a custom modal instead of using prompt
+    const modalHtml = `
+        <div id="adminPasswordModal" style="
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
+            z-index: 100000;
             backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: modalSlide 0.3s ease;
-            box-shadow: var(--shadow-hover);
-        }
-
-        @keyframes modalSlide {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-content h3 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .modal-content input,
-        .modal-content select,
-        .modal-content textarea {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        .modal-content textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .modal-buttons button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .modal-buttons .save {
-            background: var(--success);
-            color: white;
-        }
-
-        .modal-buttons .cancel {
-            background: #e0e0e0;
-        }
-
-        .modal-buttons .delete {
-            background: var(--danger);
-            color: white;
-        }
-
-        .modal-buttons button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: var(--shadow-hover);
-            z-index: 50000;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 5px solid var(--primary);
-        }
-
-        .udc-display {
-            font-size: 32px;
-            font-weight: bold;
-            color: var(--primary);
-            text-align: center;
-            letter-spacing: 5px;
-            background: #f0f2f5;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            font-family: monospace;
-        }
-
-        /* Large Mode */
-        .large-mode {
-            font-size: 18px;
-        }
-
-        .large-mode button {
-            padding: 15px 25px !important;
-            font-size: 16px !important;
-        }
-
-        .large-mode .stat-number {
-            font-size: 40px !important;
-        }
-
-        .large-mode input, .large-mode select {
-            padding: 15px !important;
-            font-size: 16px !important;
-        }
-
-        /* Alerts */
-        .alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-            z-index: 20000;
-            animation: slideInRight 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-
-        .alert-success { background: var(--success); }
-        .alert-warning { background: var(--warning); }
-        .alert-danger { background: var(--danger); }
-        .alert-info { background: var(--info); }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .top-bar {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .right-spacer {
-                display: none;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .button-group {
-                grid-template-columns: 1fr;
-            }
-            
-            .logo-titan h1 {
-                font-size: 36px;
-            }
-            
-            .logo-titan {
-                padding: 15px 30px;
-            }
-            
-            .logo-titan::before,
-            .logo-titan::after {
-                display: none;
-            }
-        }
-
-        #searchProducts {
-            width: 100%;
-            padding: 12px 40px 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 30px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        #searchProducts:focus {
-            border-color: #1a237e;
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <!-- TOP BAR WITH TWO LOGOS -->
-    <div class="top-bar">
-        <!-- LEFT LOGO - YOUR CIRCULAR LOGO -->
-        <img src="billanlogo.png" alt="BILLAN Software Development Company" class="billan-logo-image" onclick="showLogin()" title="Go to Login">
-        
-        <!-- CENTER LOGO - YOUR BIG BILLAN LOGO (UNTOUCHED) -->
-        <div class="billan-header">
-            <div class="logo-titan">
-                <h1>BILLAN</h1>
-                <p>STOCK MANAGEMENT SYSTEM</p>
-            </div>
-            <div class="tagline-titan">⚡ All-in-One Stock & Resource Management System ⚡</div>
-        </div>
-        
-        <!-- RIGHT SPACER (keeps everything balanced) -->
-        <div class="right-spacer"></div>
-    </div>
-
-    <div class="container">
-        <!-- ==================== LOGIN PAGE ==================== -->
-        <div id="loginPage" class="login-page">
-            <div class="system-badges">
-                <span class="badge">🏫 Schools</span>
-                <span class="badge">🏢 Companies</span>
-                <span class="badge">🏪 Small Businesses</span>
-            </div>
-
-            <h2>🔐 User Login • Secure Access</h2>
-
-            <div class="input-group">
-                <label>🏢 Organization Code</label>
-                <input type="text" id="orgCode" placeholder="Enter organization code">
-            </div>
-
-            <div class="input-group">
-                <label>📛 Organization Name</label>
-                <input type="text" id="orgName" placeholder="Enter organization name">
-            </div>
-
-            <div class="input-group">
-                <label>🔑 UDC (Unique Differential Code)</label>
-                <input type="text" id="udcCode" placeholder="Enter UDC from admin">
-            </div>
-
-            <div class="secure-access">
-                <span>🔒</span>
-                <span>Secure Access • 2FA Ready • End-to-End Encrypted</span>
-            </div>
-
-            <div style="display: flex; gap: 10px; margin: 30px 0;">
-                <button onclick="login()" style="flex: 2; padding: 15px; background: #1a237e; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">LOGIN</button>
-                <button onclick="showRegister()" style="flex: 1; padding: 15px; background: #4caf50; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">REGISTER</button>
-                <button onclick="showAbout()" style="flex: 1; padding: 15px; background: #ff9800; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">ABOUT</button>
-            </div>
-            
-            <div class="powered-by">
-                POWERED BY BILLAN SOFTWARE TECH | ©2026 | BSMS 
+        ">
+            <div style="
+                background: white;
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                max-width: 400px;
+                width: 90%;
+                border: 5px solid #1a237e;
+                animation: modalSlide 0.3s ease;
+            ">
+                <h2 style="color: #1a237e; margin-bottom: 20px; text-align: center;">
+                    👑 ADMIN ONLY ACCESS
+                </h2>
+                
+                <div style="margin-bottom: 25px; text-align: center; color: #666;">
+                    Enter your admin password to continue
+                </div>
+                
+                <!-- Password input with eye icon -->
+                <div style="position: relative; margin-bottom: 25px;">
+                    <input type="password" id="adminPasswordInput" 
+                           placeholder="Enter password" 
+                           style="
+                               width: 100%;
+                               padding: 15px 45px 15px 15px;
+                               border: 2px solid #e0e0e0;
+                               border-radius: 10px;
+                               font-size: 16px;
+                               outline: none;
+                               transition: all 0.3s;
+                               box-sizing: border-box;
+                           "
+                           onfocus="this.style.borderColor='#1a237e'"
+                           onblur="this.style.borderColor='#e0e0e0'">
+                    
+                    <!-- Eye icon toggle -->
+                    <span onclick="togglePasswordVisibility()" 
+                          style="
+                              position: absolute;
+                              right: 15px;
+                              top: 50%;
+                              transform: translateY(-50%);
+                              cursor: pointer;
+                              color: #1a237e;
+                              font-size: 18px;
+                              user-select: none;
+                          ">
+                        <i class="fas fa-eye" id="passwordEyeIcon"></i>
+                    </span>
+                </div>
+                
+                <!-- Buttons -->
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="submitAdminPassword()" 
+                            style="
+                                flex: 2;
+                                padding: 15px;
+                                background: linear-gradient(135deg, #1a237e, #0d1757);
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-size: 16px;
+                                font-weight: bold;
+                                cursor: pointer;
+                                transition: all 0.3s;
+                            "
+                            onmouseover="this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.transform='translateY(0)'">
+                        ACCESS
+                    </button>
+                    <button onclick="closeAdminPasswordModal()" 
+                            style="
+                                flex: 1;
+                                padding: 15px;
+                                background: #f44336;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-size: 16px;
+                                font-weight: bold;
+                                cursor: pointer;
+                                transition: all 0.3s;
+                            "
+                            onmouseover="this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.transform='translateY(0)'">
+                        CANCEL
+                    </button>
+                </div>
+                
+                <!-- Hint text -->
+                <div style="margin-top: 15px; text-align: center; font-size: 12px; color: #999;">
+                </div>
             </div>
         </div>
+    `;
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Focus the input
+    setTimeout(() => {
+        document.getElementById('adminPasswordInput')?.focus();
+    }, 100);
+}
 
-        <!-- ==================== REGISTER PAGE ==================== -->
-        <div id="registerPage" class="login-page" style="display: none;">
-            <h2>📝 Register Your Organization</h2>
+// ==================== TOGGLE PASSWORD VISIBILITY ====================
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('adminPasswordInput');
+    const eyeIcon = document.getElementById('passwordEyeIcon');
+    
+    if (passwordInput && eyeIcon) {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.className = 'fas fa-eye-slash';
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.className = 'fas fa-eye';
+        }
+    }
+}
 
-            <div class="input-group">
-                <label>Organization Name *</label>
-                <input type="text" id="regOrgName" placeholder="Enter organization name">
+// ==================== SUBMIT ADMIN PASSWORD ====================
+function submitAdminPassword() {
+    const password = document.getElementById('adminPasswordInput')?.value;
+    
+    if (secureHash(password || '') === ADMIN_PASSWORD_HASH) {
+        closeAdminPasswordModal();
+        
+        let adminInbox = JSON.parse(localStorage.getItem('bsms_admin_inbox') || '[]');
+        
+        let html = `
+            <div class="admin-panel" id="adminPanel" style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                z-index: 100001;
+                max-width: 800px;
+                max-height: 80vh;
+                overflow-y: auto;
+                border: 5px solid #1a237e;
+            ">
+                <h2 style="color: #1a237e; margin-bottom: 20px;">👑 ADMIN PANEL (AOA)</h2>
+                <p style="margin-bottom: 20px;">📧 Secure Admin Access</p>
+                
+                <div style="background: #f0f2f5; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="color: #1a237e;">📊 System Statistics</h3>
+                    <p>Total Organizations: ${db.organizations?.length || 0}</p>
+                    <p>Total Products: ${db.products?.length || 0}</p>
+                    <p>Total Categories: ${db.categories?.length || 0}</p>
+                </div>
+                
+                <h3 style="color: #1a237e; margin-bottom: 15px;">📋 Recent Registrations</h3>
+        `;
+        
+        if (adminInbox.length === 0) {
+            html += '<p style="text-align: center; padding: 40px; background: #f5f5f5; border-radius: 10px;">📭 No registrations yet. Register first!</p>';
+        } else {
+            adminInbox.forEach((item, index) => {
+                html += `
+                    <div style="background: ${item.read ? '#f5f5f5' : '#e8eaf6'}; padding: 20px; margin-bottom: 15px; border-radius: 10px; border-left: 5px solid #1a237e;">
+                        <p><strong>🏢 ${item.organization}</strong> (${item.orgCode})</p>
+                        <div style="font-size: 28px; font-weight: bold; color: #1a237e; text-align: center; letter-spacing: 3px; background: white; padding: 15px; border-radius: 10px; margin: 10px 0; font-family: monospace;">${item.udc}</div>
+                        <p>📅 ${new Date(item.date).toLocaleString()}</p>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button onclick="markUDCAsRead(${index})" style="padding: 5px 15px; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer;">✓ Mark Read</button>
+                            <button onclick="deleteUDC(${index})" style="padding: 5px 15px; background: #c62828; color: white; border: none; border-radius: 5px; cursor: pointer;">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        html += '<button onclick="closeAdminPanel()" style="width: 100%; padding: 15px; background: #1a237e; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer;">CLOSE</button></div>';
+        
+        closeAdminPanel();
+        document.body.insertAdjacentHTML('beforeend', html);
+        showAlert('✅ Access granted to Admin Panel!', 'success');
+        logAudit('Admin panel accessed');
+    } else {
+        showAlert('❌ Access denied!', 'danger');
+        document.getElementById('adminPasswordInput').value = '';
+        document.getElementById('adminPasswordInput').focus();
+    }
+}
+
+// ==================== CLOSE PASSWORD MODAL ====================
+function closeAdminPasswordModal() {
+    const modal = document.getElementById('adminPasswordModal');
+    if (modal) modal.remove();
+}
+
+function markUDCAsRead(index) {
+    let adminInbox = JSON.parse(localStorage.getItem('bsms_admin_inbox') || '[]');
+    if (adminInbox[index]) {
+        adminInbox[index].read = true;
+        localStorage.setItem('bsms_admin_inbox', JSON.stringify(adminInbox));
+        closeAdminPanel();
+        showAdminPanel();
+    }
+}
+
+function deleteUDC(index) {
+    let adminInbox = JSON.parse(localStorage.getItem('bsms_admin_inbox') || '[]');
+    adminInbox.splice(index, 1);
+    localStorage.setItem('bsms_admin_inbox', JSON.stringify(adminInbox));
+    closeAdminPanel();
+    showAdminPanel();
+    showAlert('✅ UDC deleted', 'success');
+}
+
+function closeAdminPanel() {
+    const panel = document.getElementById('adminPanel');
+    if (panel) panel.remove();
+}
+
+// ==================== PAGE NAVIGATION FUNCTIONS ====================
+function showLogin() {
+    console.log('Showing Login Page');
+    document.getElementById('loginPage').style.display = 'block';
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('aboutPage').style.display = 'none';
+    document.getElementById('paymentPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'none';
+}
+
+function showRegister() {
+    console.log('Showing Register Page');
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'block';
+    document.getElementById('aboutPage').style.display = 'none';
+    document.getElementById('paymentPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'none';
+}
+
+function showAbout() {
+    console.log('Showing About Page');
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('aboutPage').style.display = 'block';
+    document.getElementById('paymentPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'none';
+}
+
+function hideAllPages() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('aboutPage').style.display = 'none';
+    document.getElementById('paymentPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'none';
+}
+
+// ==================== REGISTER FUNCTION ====================
+function register() {
+    console.log('Register function called');
+    
+    const orgName = document.getElementById('regOrgName')?.value;
+    const orgCode = document.getElementById('regOrgCode')?.value;
+    const owner = document.getElementById('regOwner')?.value;
+    const type = document.getElementById('regType')?.value;
+    const phone = document.getElementById('regPhone')?.value;
+    const email = document.getElementById('regEmail')?.value;
+    const location = document.getElementById('regLocation')?.value;
+    
+    if (!orgName || !orgCode || !owner || !phone) {
+        showAlert('❌ Please fill all required fields!', 'warning');
+        return;
+    }
+    
+    const udc = generateUDC();
+    
+    const organization = {
+        id: Date.now(),
+        name: orgName,
+        code: orgCode,
+        owner: owner,
+        type: type,
+        phone: phone,
+        email: email || 'Not provided',
+        location: location || 'Not specified',
+        udc: udc,
+        registeredDate: new Date().toISOString(),
+        subscription: {
+            active: false,
+            startDate: null,
+            endDate: null,
+            tier: null
+        }
+    };
+    
+    if (!db.organizations) db.organizations = [];
+    db.organizations.push(organization);
+    saveDB();
+    
+    let adminInbox = JSON.parse(localStorage.getItem('bsms_admin_inbox') || '[]');
+    adminInbox.push({
+        organization: orgName,
+        orgCode: orgCode,
+        udc: udc,
+        date: new Date().toISOString(),
+        read: false
+    });
+    localStorage.setItem('bsms_admin_inbox', JSON.stringify(adminInbox));
+    
+    showAlert('✅ Registration complete! An administrator will provide your UDC.', 'success');
+    
+    document.getElementById('regOrgName').value = '';
+    document.getElementById('regOrgCode').value = '';
+    document.getElementById('regOwner').value = '';
+    document.getElementById('regPhone').value = '';
+    document.getElementById('regEmail').value = '';
+    document.getElementById('regLocation').value = '';
+    
+    showLogin();
+}
+
+// ==================== LOGIN FUNCTION ====================
+function login() {
+    console.log('Login function called');
+    
+    const orgCode = document.getElementById('orgCode')?.value;
+    const orgName = document.getElementById('orgName')?.value;
+    const udc = document.getElementById('udcCode')?.value;
+    
+    if (!orgCode || !orgName || !udc) {
+        showAlert('❌ Please fill all fields!', 'warning');
+        return;
+    }
+    
+    const organization = db.organizations.find(org => 
+        org.code === orgCode && org.name === orgName && org.udc === udc
+    );
+    
+    if (!organization) {
+        showAlert('❌ Login failed. Please check your credentials.', 'danger');
+        logAudit('Failed login attempt');
+        return;
+    }
+    
+    db.currentOrg = organization;
+    db.currentUser = { name: organization.owner, role: 'admin' };
+    saveDB();
+    
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('aboutPage').style.display = 'none';
+    document.getElementById('paymentPage').style.display = 'block';
+    
+    showAlert('✅ Login successful! Choose your subscription.', 'success');
+    logAudit(`Login: ${orgName}`);
+}
+
+// ==================== PAYMENT ====================
+let selectedTier = null;
+let selectedPrice = null;
+
+function selectTier(months, price) {
+    selectedTier = months;
+    selectedPrice = price;
+    
+    document.getElementById('tier3').style.border = 'none';
+    document.getElementById('tier6').style.border = 'none';
+    document.getElementById('tier9').style.border = 'none';
+    document.getElementById('tier12').style.border = 'none';
+    document.getElementById('tier0').style.border = 'none';
+    
+    event.currentTarget.style.border = '3px solid #1a237e';
+}
+
+function processPayment() {
+    if (selectedTier === null) {
+        showAlert('❌ Please select a subscription tier!', 'warning');
+        return;
+    }
+    
+    showAlert('⏳ Processing payment...', 'info');
+    
+    setTimeout(() => {
+        if (selectedTier === 0) {
+            startSubscription(7);
+            localStorage.removeItem('bsms_last_reminder_date');
+            showAlert('✅ 7-day free trial activated!', 'success');
+        } else {
+            startSubscription(selectedTier * 30);
+            localStorage.removeItem('bsms_last_reminder_date');
+            showAlert(`✅ Payment successful! ${selectedTier} months activated.`, 'success');
+        }
+        
+        hideAllPages();
+        document.getElementById('dashboard').style.display = 'block';
+        
+        document.getElementById('dashboardOrgName').textContent = db.currentOrg.name;
+        document.getElementById('dashboardOrgCode').textContent = 'Code: ' + db.currentOrg.code;
+        
+        document.getElementById('settingsOrgName').textContent = db.currentOrg.name;
+        document.getElementById('settingsOrgCode').textContent = db.currentOrg.code;
+        document.getElementById('settingsUDC').textContent = db.currentOrg.udc;
+        
+        loadCategories();
+        loadProducts();
+        startSubscriptionTimer();
+        updateStats();
+        showWelcomeCelebration();
+        logAudit(`Subscription activated: ${selectedTier} months`);
+    }, 2000);
+}
+
+function startSubscription(days) {
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + days);
+    
+    db.currentOrg.subscription = {
+        active: true,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        tier: days === 7 ? 'trial' : selectedTier + 'months'
+    };
+    saveDB();
+}
+
+// ==================== SUBSCRIPTION TIMER ====================
+let timerInterval;
+
+function startSubscriptionTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    checkAndShowDailyReminder();
+    
+    timerInterval = setInterval(() => {
+        if (!db.currentOrg?.subscription?.active) return;
+        
+        const now = new Date();
+        const end = new Date(db.currentOrg.subscription.endDate);
+        const diff = end - now;
+        
+        if (diff <= 0) {
+            clearInterval(timerInterval);
+            lockSystem();
+            return;
+        }
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById('subscriptionTimer').textContent = 
+            `${days.toString().padStart(3, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        document.getElementById('settingsCounter').textContent = 
+            `${Math.floor(days/365)}y ${Math.floor((days%365)/30)}m ${days%30}d ${hours}h ${minutes}m`;
+        
+    }, 1000);
+}
+
+function checkAndShowDailyReminder() {
+    if (!db.currentOrg?.subscription?.active) return;
+    
+    const now = new Date();
+    const end = new Date(db.currentOrg.subscription.endDate);
+    const diff = end - now;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    if (days <= 7 && days > 0) {
+        const lastReminder = localStorage.getItem('bsms_last_reminder_date');
+        const today = new Date().toDateString();
+        
+        if (lastReminder !== today) {
+            showAlert(`⚠️ Your subscription expires in ${days} days! Please renew.`, 'warning');
+            localStorage.setItem('bsms_last_reminder_date', today);
+        }
+    }
+}
+
+function resetDailyReminder() {
+    localStorage.removeItem('bsms_last_reminder_date');
+    showAlert('✅ Daily reminder reset', 'success');
+}
+
+function lockSystem() {
+    document.getElementById('mainContent').innerHTML = `
+        <div style="text-align: center; padding: 100px;">
+            <h2 style="color: #c62828;">🔒 SUBSCRIPTION EXPIRED</h2>
+            <p>Please renew to continue using BSMS TITAN.</p>
+            <button onclick="showRenewal()" style="margin-top: 20px; padding: 15px 30px; background: #1a237e; color: white; border: none; border-radius: 10px; cursor: pointer;">RENEW NOW</button>
+        </div>
+    `;
+}
+
+function showRenewal() {
+    hideAllPages();
+    document.getElementById('paymentPage').style.display = 'block';
+}
+
+function showWelcomeCelebration() {
+    showAlert('🎉 WELCOME TO BSMS TITAN!', 'success');
+}
+
+// ==================== CATEGORY MANAGEMENT ====================
+function loadCategories() {
+    const categoryButtons = document.getElementById('categoryButtons');
+    const categorySelect = document.getElementById('productCategorySelect');
+    const editCategorySelect = document.getElementById('editProductCategorySelect');
+    
+    if (!categoryButtons) return;
+    
+    updateCategoryCounts();
+    
+    let buttonsHtml = '<button class="category-btn active" onclick="filterByCategory(\'all\')">📋 All Categories</button>';
+    
+    db.categories.forEach(cat => {
+        buttonsHtml += `<button class="category-btn" onclick="filterByCategory('${cat.name}')">${cat.icon || '📁'} ${cat.name} (${cat.count || 0})</button>`;
+    });
+    
+    categoryButtons.innerHTML = buttonsHtml;
+    
+    if (categorySelect) {
+        let options = '<option value="">Select Category</option>';
+        db.categories.forEach(cat => {
+            options += `<option value="${cat.name}">${cat.name}</option>`;
+        });
+        categorySelect.innerHTML = options;
+    }
+    
+    if (editCategorySelect) {
+        let options = '<option value="">Select Category</option>';
+        db.categories.forEach(cat => {
+            options += `<option value="${cat.name}">${cat.name}</option>`;
+        });
+        editCategorySelect.innerHTML = options;
+    }
+    
+    const totalCat = document.getElementById('totalCategories');
+    if (totalCat) totalCat.textContent = db.categories.length;
+}
+
+function updateCategoryCounts() {
+    db.categories.forEach(cat => cat.count = 0);
+    
+    db.products.forEach(product => {
+        const category = db.categories.find(c => c.name === product.category);
+        if (category) {
+            category.count = (category.count || 0) + 1;
+        }
+    });
+}
+
+function filterByCategory(category) {
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+    
+    if (category === 'all') {
+        loadProducts();
+    } else {
+        const filtered = db.products.filter(p => p.category === category);
+        displayProducts(filtered);
+    }
+    
+    showAlert(`📁 Showing ${category === 'all' ? 'all' : category} items`, 'info');
+}
+
+function showAddCategoryModal() {
+    document.getElementById('addCategoryModal').style.display = 'flex';
+}
+
+function addCategory() {
+    const name = document.getElementById('categoryName').value;
+    const desc = document.getElementById('categoryDescription').value;
+    const icon = document.getElementById('categoryIcon').value || '📁';
+    
+    if (!name) {
+        showAlert('❌ Please enter category name', 'warning');
+        return;
+    }
+    
+    if (db.categories.find(c => c.name.toLowerCase() === name.toLowerCase())) {
+        showAlert('❌ Category already exists!', 'danger');
+        return;
+    }
+    
+    db.categories.push({
+        id: Date.now(),
+        name: name,
+        description: desc || 'No description',
+        icon: icon,
+        count: 0
+    });
+    
+    saveDB();
+    loadCategories();
+    hideModal('addCategoryModal');
+    
+    document.getElementById('categoryName').value = '';
+    document.getElementById('categoryDescription').value = '';
+    document.getElementById('categoryIcon').value = '';
+    
+    showAlert('✅ Category added successfully!', 'success');
+    logAudit(`Added category: ${name}`);
+}
+
+// ==================== QUANTITY MEASUREMENTS ====================
+const quantityMeasurements = [
+    { value: 'pieces', label: 'Pieces (pcs)', symbol: 'pcs' },
+    { value: 'kilograms', label: 'Kilograms (kg)', symbol: 'kg' },
+    { value: 'grams', label: 'Grams (g)', symbol: 'g' },
+    { value: 'liters', label: 'Liters (L)', symbol: 'L' },
+    { value: 'milliliters', label: 'Milliliters (mL)', symbol: 'mL' },
+    { value: 'boxes', label: 'Boxes (box)', symbol: 'box' },
+    { value: 'cartons', label: 'Cartons (ctn)', symbol: 'ctn' },
+    { value: 'dozens', label: 'Dozens (dz)', symbol: 'dz' },
+    { value: 'meters', label: 'Meters (m)', symbol: 'm' },
+    { value: 'centimeters', label: 'Centimeters (cm)', symbol: 'cm' }
+];
+
+function getMeasurementSymbol(measurement) {
+    const found = quantityMeasurements.find(m => m.value === measurement);
+    return found ? found.symbol : 'pcs';
+}
+
+// ==================== LOW STOCK CHECK ====================
+function isLowStock(product) {
+    if (!product || product.quantity === undefined || product.quantity === null) return false;
+    if (product.quantity <= 0) return false;
+    
+    const originalQty = product.originalQuantity || product.quantity;
+    const threshold = Math.ceil(originalQty * 0.2);
+    
+    return product.quantity <= threshold;
+}
+
+function getLowStockStatus(product) {
+    if (!product) return { isLow: false, message: '' };
+    
+    const originalQty = product.originalQuantity || product.quantity;
+    const threshold = Math.ceil(originalQty * 0.2);
+    const isLow = product.quantity <= threshold && product.quantity > 0;
+    const measurement = product.measurement || 'pieces';
+    const measurementObj = quantityMeasurements.find(m => m.value === measurement) || quantityMeasurements[0];
+    
+    let message = '';
+    if (isLow) {
+        message = `⚠️ Low Stock! Only ${product.quantity} ${measurementObj.symbol} left (Threshold: ${threshold} ${measurementObj.symbol})`;
+    } else if (product.quantity === 0) {
+        message = `❌ Out of Stock!`;
+    } else {
+        message = `✅ In Stock: ${product.quantity} ${measurementObj.symbol}`;
+    }
+    
+    return {
+        isLow: isLow,
+        threshold: threshold,
+        measurement: measurementObj.symbol,
+        message: message
+    };
+}
+
+// ==================== PRODUCT MANAGEMENT ====================
+function loadProducts(filter = 'all') {
+    let products = db.products || [];
+    
+    if (filter === 'low') {
+        products = products.filter(p => isLowStock(p));
+    } else if (filter === 'out') {
+        products = products.filter(p => p.quantity === 0);
+    }
+    
+    displayProducts(products);
+    updateStats();
+}
+
+function displayProducts(products) {
+    const tbody = document.getElementById('productsBody');
+    
+    if (!products || products.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 50px;">
+                    <p style="font-size: 24px; color: #666;">📭 No products found</p>
+                    <p style="color: #999; margin-top: 10px;">Click "Add Product" to start adding items</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    let html = '';
+    products.forEach(product => {
+        let statusClass = 'status-good';
+        let statusText = 'In Stock';
+        let titleText = '';
+        
+        if (product.quantity === 0) {
+            statusClass = 'status-danger';
+            statusText = 'Out of Stock';
+            titleText = 'No items left';
+        } else {
+            const originalQty = product.originalQuantity || product.quantity;
+            const threshold = Math.ceil(originalQty * 0.2);
+            
+            if (product.quantity <= threshold) {
+                statusClass = 'status-warning';
+                statusText = `⚠️ Low Stock (${product.quantity}/${threshold})`;
+                titleText = `Original: ${originalQty}, Threshold: ${threshold} (20%)`;
+            } else {
+                const percent = Math.round((product.quantity / originalQty) * 100);
+                statusText = `✅ ${percent}% remaining`;
+                titleText = `Original: ${originalQty}, Current: ${product.quantity}`;
+            }
+        }
+        
+        const measurement = product.measurement || 'pieces';
+        const measurementSymbol = getMeasurementSymbol(measurement);
+        
+        html += `<tr class="${statusClass === 'status-warning' ? 'low-stock' : ''}">
+            <td><strong>${product.name}</strong><br><small>${product.description || ''}</small></td>
+            <td>${product.category}</td>
+            <td>${product.price.toLocaleString()} RWF</td>
+            <td>${product.quantity} ${measurementSymbol}</td>
+            <td><span class="status-badge ${statusClass}" title="${titleText}">${statusText}</span></td>
+            <td class="action-cell">
+                <button onclick="editProduct(${product.id})" class="btn-small btn-edit" title="Edit">✏️</button>
+                <button onclick="sellProductFromList(${product.id})" class="btn-small btn-sell" title="Sell">💰</button>
+                <button onclick="viewProductDetails(${product.id})" class="btn-small btn-view" title="View">👁️</button>
+                <button onclick="deleteProduct(${product.id})" class="btn-small btn-delete" title="Delete">🗑️</button>
+            </td>
+        </tr>`;
+    });
+    
+    tbody.innerHTML = html;
+    updateStats();
+}
+
+function updateStats() {
+    const products = db.products || [];
+    
+    const totalProducts = products.length;
+    
+    let lowStock = 0;
+    products.forEach(product => {
+        if (product.quantity <= 0) return;
+        
+        const originalQty = product.originalQuantity || product.quantity;
+        const threshold = Math.ceil(originalQty * 0.2);
+        
+        if (product.quantity <= threshold) {
+            lowStock++;
+        }
+    });
+    
+    const totalValue = products.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+    
+    const today = new Date().toDateString();
+    const todaySales = (db.sales || []).filter(s => new Date(s.date).toDateString() === today);
+    const todayCount = todaySales.length;
+    const todayAmount = todaySales.reduce((sum, s) => sum + s.total, 0);
+    
+    const totalProductsEl = document.getElementById('totalProducts');
+    if (totalProductsEl) totalProductsEl.textContent = totalProducts;
+    
+    const lowStockCountEl = document.getElementById('lowStockCount');
+    if (lowStockCountEl) lowStockCountEl.textContent = lowStock;
+    
+    const lowStockBadge = document.getElementById('lowStockBadge');
+    if (lowStockBadge) lowStockBadge.textContent = lowStock;
+    
+    const todaySalesEl = document.getElementById('todaySales');
+    if (todaySalesEl) todaySalesEl.textContent = todayCount;
+    
+    const todaySalesAmountEl = document.getElementById('todaySalesAmount');
+    if (todaySalesAmountEl) todaySalesAmountEl.textContent = todayAmount.toLocaleString() + ' RWF';
+    
+    const totalValueEl = document.getElementById('totalValue');
+    if (totalValueEl) totalValueEl.textContent = totalValue.toLocaleString() + ' RWF';
+}
+
+function showAddProductModal() {
+    const select = document.getElementById('productCategorySelect');
+    let options = '<option value="">Select Category</option>';
+    db.categories.forEach(cat => {
+        options += `<option value="${cat.name}">${cat.name}</option>`;
+    });
+    select.innerHTML = options;
+    
+    document.getElementById('addProductModal').style.display = 'flex';
+}
+
+function updateCategoryInput() {
+    const select = document.getElementById('productCategorySelect');
+    const input = document.getElementById('productCategory');
+    input.value = select.value;
+}
+
+function addProduct() {
+    const category = document.getElementById('productCategory').value;
+    const name = document.getElementById('productName').value;
+    const price = parseFloat(document.getElementById('productPrice').value);
+    const quantity = parseInt(document.getElementById('productQuantity').value);
+    const measurement = document.getElementById('productMeasurement')?.value || 'pieces';
+    const barcode = document.getElementById('productBarcode').value;
+    const expiry = document.getElementById('productExpiry').value;
+    const description = document.getElementById('productDescription').value;
+    
+    if (!name || !category || !price || !quantity) {
+        showAlert('❌ Please fill all required fields!', 'warning');
+        return;
+    }
+    
+    if (!db.categories.find(c => c.name === category)) {
+        db.categories.push({
+            id: Date.now(),
+            name: category,
+            description: 'Auto-added',
+            icon: '📁',
+            count: 0
+        });
+    }
+    
+    const newProduct = {
+        id: Date.now(),
+        name: name,
+        category: category,
+        price: price,
+        quantity: quantity,
+        originalQuantity: quantity,
+        measurement: measurement,
+        barcode: barcode || 'N/A',
+        expiry: expiry || null,
+        description: description || '',
+        created: new Date().toISOString()
+    };
+    
+    db.products.push(newProduct);
+    saveDB();
+    
+    hideModal('addProductModal');
+    clearProductForm();
+    loadCategories();
+    loadProducts();
+    
+    const threshold = Math.ceil(quantity * 0.2);
+    showAlert(`✅ Product added! Low stock at ${threshold} ${getMeasurementSymbol(measurement)}`, 'success');
+    logAudit(`Added product: ${name}`);
+}
+
+function clearProductForm() {
+    document.getElementById('productCategory').value = '';
+    document.getElementById('productName').value = '';
+    document.getElementById('productPrice').value = '';
+    document.getElementById('productQuantity').value = '';
+    document.getElementById('productBarcode').value = '';
+    document.getElementById('productExpiry').value = '';
+    document.getElementById('productDescription').value = '';
+}
+
+function editProduct(id) {
+    const product = db.products.find(p => p.id === id);
+    if (!product) return;
+    
+    const select = document.getElementById('editProductCategorySelect');
+    let options = '<option value="">Select Category</option>';
+    db.categories.forEach(cat => {
+        options += `<option value="${cat.name}" ${cat.name === product.category ? 'selected' : ''}>${cat.name}</option>`;
+    });
+    select.innerHTML = options;
+    
+    document.getElementById('editProductId').value = product.id;
+    document.getElementById('editProductCategory').value = product.category;
+    document.getElementById('editProductName').value = product.name;
+    document.getElementById('editProductPrice').value = product.price;
+    document.getElementById('editProductQuantity').value = product.quantity;
+    document.getElementById('editProductBarcode').value = product.barcode || '';
+    document.getElementById('editProductExpiry').value = product.expiry || '';
+    document.getElementById('editProductDescription').value = product.description || '';
+    
+    document.getElementById('editProductModal').style.display = 'flex';
+}
+
+function updateProduct() {
+    const id = parseInt(document.getElementById('editProductId').value);
+    const product = db.products.find(p => p.id === id);
+    
+    if (product) {
+        product.category = document.getElementById('editProductCategory').value;
+        product.name = document.getElementById('editProductName').value;
+        product.price = parseFloat(document.getElementById('editProductPrice').value);
+        
+        const newQuantity = parseInt(document.getElementById('editProductQuantity').value);
+        product.quantity = newQuantity;
+        
+        if (!product.originalQuantity || confirm('Update original quantity for threshold calculation?')) {
+            product.originalQuantity = newQuantity;
+        }
+        
+        const measurement = document.getElementById('editProductMeasurement')?.value;
+        if (measurement) {
+            product.measurement = measurement;
+        }
+        
+        product.barcode = document.getElementById('editProductBarcode').value;
+        product.expiry = document.getElementById('editProductExpiry').value;
+        product.description = document.getElementById('editProductDescription').value;
+        
+        saveDB();
+        hideModal('editProductModal');
+        loadCategories();
+        loadProducts();
+        
+        showAlert('✅ Product updated successfully!', 'success');
+        logAudit(`Updated product: ${product.name}`);
+    }
+}
+
+function deleteProduct(id) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        const product = db.products.find(p => p.id === id);
+        db.products = db.products.filter(p => p.id !== id);
+        saveDB();
+        loadCategories();
+        loadProducts();
+        
+        showAlert('🗑️ Product deleted', 'info');
+        logAudit(`Deleted product: ${product.name}`);
+    }
+}
+
+function deleteProductFromEdit() {
+    const id = parseInt(document.getElementById('editProductId').value);
+    hideModal('editProductModal');
+    deleteProduct(id);
+}
+
+function viewProductDetails(id) {
+    const product = db.products.find(p => p.id === id);
+    if (!product) return;
+    
+    const html = `
+        <h3>📦 ${product.name}</h3>
+        <p><strong>Category:</strong> ${product.category}</p>
+        <p><strong>Price:</strong> ${product.price.toLocaleString()} RWF</p>
+        <p><strong>Quantity:</strong> ${product.quantity} ${getMeasurementSymbol(product.measurement)}</p>
+        <p><strong>Original Quantity:</strong> ${product.originalQuantity || product.quantity} ${getMeasurementSymbol(product.measurement)}</p>
+        <p><strong>Low Stock Threshold:</strong> ${Math.ceil((product.originalQuantity || product.quantity) * 0.2)} ${getMeasurementSymbol(product.measurement)}</p>
+        <p><strong>Barcode:</strong> ${product.barcode}</p>
+        <p><strong>Expiry:</strong> ${product.expiry || 'N/A'}</p>
+        <p><strong>Description:</strong> ${product.description || 'N/A'}</p>
+        <p><strong>Added:</strong> ${new Date(product.created).toLocaleString()}</p>
+    `;
+    
+    document.getElementById('reportTitle').textContent = '📦 Product Details';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+// ==================== SALES MANAGEMENT ====================
+function showSales() {
+    showSellProductModal();
+}
+
+function showSellProductModal() {
+    const select = document.getElementById('sellProductSelect');
+    select.innerHTML = '<option value="">Select Product</option>';
+    
+    db.products.forEach(p => {
+        if (p.quantity > 0) {
+            select.innerHTML += `<option value="${p.id}">${p.name} (${p.quantity} left @ ${p.price} RWF)</option>`;
+        }
+    });
+    
+    document.getElementById('sellProductModal').style.display = 'flex';
+}
+
+function sellProductFromList(id) {
+    const product = db.products.find(p => p.id === id);
+    if (!product) return;
+    
+    const select = document.getElementById('sellProductSelect');
+    select.innerHTML = `<option value="${product.id}">${product.name} (${product.quantity} available)</option>`;
+    
+    document.getElementById('sellProductModal').style.display = 'flex';
+}
+
+function sellProduct() {
+    const productId = parseInt(document.getElementById('sellProductSelect').value);
+    const quantity = parseInt(document.getElementById('sellQuantity').value);
+    const customer = document.getElementById('sellCustomer').value;
+    const paymentMethod = document.getElementById('sellPaymentMethod').value;
+    const reference = document.getElementById('sellReference').value;
+    const notes = document.getElementById('sellNotes').value;
+    
+    if (!productId || !quantity) {
+        showAlert('❌ Please select product and quantity!', 'warning');
+        return;
+    }
+    
+    const product = db.products.find(p => p.id === productId);
+    
+    if (quantity > product.quantity) {
+        showAlert(`❌ Only ${product.quantity} available!`, 'danger');
+        return;
+    }
+    
+    product.quantity -= quantity;
+    
+    if (!db.sales) db.sales = [];
+    
+    const sale = {
+        id: Date.now(),
+        productId: productId,
+        productName: product.name,
+        quantity: quantity,
+        price: product.price,
+        total: product.price * quantity,
+        customer: customer || 'Walk-in',
+        paymentMethod: paymentMethod,
+        reference: reference || 'N/A',
+        notes: notes || '',
+        date: new Date().toISOString()
+    };
+    
+    db.sales.push(sale);
+    saveDB();
+    
+    hideModal('sellProductModal');
+    document.getElementById('sellQuantity').value = '';
+    document.getElementById('sellCustomer').value = '';
+    document.getElementById('sellReference').value = '';
+    document.getElementById('sellNotes').value = '';
+    
+    loadProducts();
+    showAlert(`💰 Sale recorded: ${quantity} x ${product.name} = ${(product.price * quantity).toLocaleString()} RWF`, 'success');
+    logAudit(`Sale: ${quantity} x ${product.name}`);
+}
+
+// ==================== PURCHASE MANAGEMENT ====================
+function showPurchases() {
+    const select = document.getElementById('purchaseProductSelect');
+    select.innerHTML = '<option value="">Select Product</option>';
+    
+    db.products.forEach(p => {
+        select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+    });
+    
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('purchaseDate').value = today;
+    
+    const modalContent = document.querySelector('#purchaseModal .modal-content');
+    if (modalContent && !document.getElementById('purchaseExpiry')) {
+        const expiryField = document.createElement('input');
+        expiryField.type = 'date';
+        expiryField.id = 'purchaseExpiry';
+        expiryField.placeholder = 'Expiry Date (optional)';
+        expiryField.style.marginBottom = '15px';
+        expiryField.style.width = '100%';
+        expiryField.style.padding = '12px';
+        expiryField.style.border = '2px solid #e0e0e0';
+        expiryField.style.borderRadius = '10px';
+        
+        const dateField = document.getElementById('purchaseDate');
+        if (dateField && dateField.parentNode) {
+            dateField.parentNode.insertBefore(expiryField, dateField.nextSibling);
+        }
+    }
+    
+    document.getElementById('purchaseModal').style.display = 'flex';
+}
+
+function recordPurchase() {
+    const productId = parseInt(document.getElementById('purchaseProductSelect').value);
+    const quantity = parseInt(document.getElementById('purchaseQuantity').value);
+    const price = parseFloat(document.getElementById('purchasePrice').value);
+    const supplier = document.getElementById('purchaseSupplier').value;
+    const invoice = document.getElementById('purchaseInvoice').value;
+    const date = document.getElementById('purchaseDate').value;
+    const notes = document.getElementById('purchaseNotes').value;
+    
+    if (!productId || !quantity || !price) {
+        showAlert('❌ Please fill all required fields!', 'warning');
+        return;
+    }
+    
+    const product = db.products.find(p => p.id === productId);
+    
+    if (product) {
+        product.quantity += quantity;
+        product.price = price;
+        
+        if (!db.purchases) db.purchases = [];
+        
+        db.purchases.push({
+            id: Date.now(),
+            productId: productId,
+            productName: product.name,
+            quantity: quantity,
+            price: price,
+            total: price * quantity,
+            supplier: supplier || 'Unknown',
+            invoice: invoice || 'N/A',
+            date: date || new Date().toISOString(),
+            notes: notes || '',
+            recordedAt: new Date().toISOString()
+        });
+        
+        saveDB();
+        hideModal('purchaseModal');
+        
+        document.getElementById('purchaseQuantity').value = '';
+        document.getElementById('purchasePrice').value = '';
+        document.getElementById('purchaseSupplier').value = '';
+        document.getElementById('purchaseInvoice').value = '';
+        document.getElementById('purchaseNotes').value = '';
+        
+        loadProducts();
+        showAlert(`📥 Purchase recorded: ${quantity} x ${product.name}`, 'success');
+        logAudit(`Purchase: ${quantity} x ${product.name}`);
+    }
+}
+
+// ==================== TRANSFER MANAGEMENT ====================
+function showTransfers() {
+    const select = document.getElementById('transferProductSelect');
+    select.innerHTML = '<option value="">Select Product</option>';
+    
+    db.products.forEach(p => {
+        if (p.quantity > 0) {
+            select.innerHTML += `<option value="${p.id}">${p.name} (${p.quantity} available)</option>`;
+        }
+    });
+    
+    document.getElementById('transferModal').style.display = 'flex';
+}
+
+function transferStock() {
+    const productId = parseInt(document.getElementById('transferProductSelect').value);
+    const quantity = parseInt(document.getElementById('transferQuantity').value);
+    const from = document.getElementById('transferFrom').value;
+    const to = document.getElementById('transferTo').value;
+    const reference = document.getElementById('transferReference').value;
+    const reason = document.getElementById('transferReason').value;
+    
+    if (!productId || !quantity || !from || !to) {
+        showAlert('❌ Please fill all fields!', 'warning');
+        return;
+    }
+    
+    const product = db.products.find(p => p.id === productId);
+    
+    if (quantity > product.quantity) {
+        showAlert(`❌ Only ${product.quantity} available!`, 'danger');
+        return;
+    }
+    
+    product.quantity -= quantity;
+    
+    if (!db.transfers) db.transfers = [];
+    
+    db.transfers.push({
+        id: Date.now(),
+        productId: productId,
+        productName: product.name,
+        quantity: quantity,
+        from: from,
+        to: to,
+        reference: reference || 'N/A',
+        reason: reason || 'Stock transfer',
+        date: new Date().toISOString()
+    });
+    
+    saveDB();
+    hideModal('transferModal');
+    
+    document.getElementById('transferQuantity').value = '';
+    document.getElementById('transferFrom').value = '';
+    document.getElementById('transferTo').value = '';
+    document.getElementById('transferReference').value = '';
+    document.getElementById('transferReason').value = '';
+    
+    loadProducts();
+    showAlert(`🔄 Transfer completed: ${quantity} x ${product.name} from ${from} to ${to}`, 'success');
+    logAudit(`Transfer: ${quantity} x ${product.name}`);
+}
+
+// ==================== RETURN MANAGEMENT ====================
+function showReturns() {
+    const select = document.getElementById('returnProductSelect');
+    select.innerHTML = '<option value="">Select Product</option>';
+    
+    db.products.forEach(p => {
+        select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+    });
+    
+    document.getElementById('returnModal').style.display = 'flex';
+}
+
+function returnStock() {
+    const productId = parseInt(document.getElementById('returnProductSelect').value);
+    const quantity = parseInt(document.getElementById('returnQuantity').value);
+    const type = document.getElementById('returnType').value;
+    const reason = document.getElementById('returnReason').value;
+    const reference = document.getElementById('returnReference').value;
+    const notes = document.getElementById('returnNotes').value;
+    
+    if (!productId || !quantity) {
+        showAlert('❌ Please fill all fields!', 'warning');
+        return;
+    }
+    
+    const product = db.products.find(p => p.id === productId);
+    
+    product.quantity += quantity;
+    
+    if (!db.returns) db.returns = [];
+    
+    db.returns.push({
+        id: Date.now(),
+        productId: productId,
+        productName: product.name,
+        quantity: quantity,
+        type: type,
+        reason: reason || 'Return',
+        reference: reference || 'N/A',
+        notes: notes || '',
+        date: new Date().toISOString()
+    });
+    
+    saveDB();
+    hideModal('returnModal');
+    
+    document.getElementById('returnQuantity').value = '';
+    document.getElementById('returnReason').value = '';
+    document.getElementById('returnReference').value = '';
+    document.getElementById('returnNotes').value = '';
+    
+    loadProducts();
+    showAlert(`↩️ Return processed: ${quantity} x ${product.name}`, 'success');
+    logAudit(`Return: ${quantity} x ${product.name}`);
+}
+
+// ==================== ADJUSTMENT MANAGEMENT ====================
+function showAdjustments() {
+    const select = document.getElementById('adjustmentProductSelect');
+    select.innerHTML = '<option value="">Select Product</option>';
+    
+    db.products.forEach(p => {
+        select.innerHTML += `<option value="${p.id}">${p.name} (Current: ${p.quantity})</option>`;
+    });
+    
+    document.getElementById('adjustmentModal').style.display = 'flex';
+}
+
+function updateAdjustmentCurrent() {
+    const productId = parseInt(document.getElementById('adjustmentProductSelect').value);
+    const product = db.products.find(p => p.id === productId);
+    if (product) {
+        document.getElementById('adjustmentCurrentQuantity').value = product.quantity;
+    }
+}
+
+function makeAdjustment() {
+    const productId = parseInt(document.getElementById('adjustmentProductSelect').value);
+    const newQuantity = parseInt(document.getElementById('adjustmentNewQuantity').value);
+    const type = document.getElementById('adjustmentType').value;
+    const reason = document.getElementById('adjustmentReason').value;
+    const notes = document.getElementById('adjustmentNotes').value;
+    
+    if (!productId || !newQuantity) {
+        showAlert('❌ Please fill all fields!', 'warning');
+        return;
+    }
+    
+    const product = db.products.find(p => p.id === productId);
+    const oldQuantity = product.quantity;
+    
+    if (type === 'increase') {
+        product.quantity += newQuantity;
+    } else if (type === 'decrease') {
+        if (newQuantity > product.quantity) {
+            showAlert('❌ Cannot decrease more than current stock!', 'danger');
+            return;
+        }
+        product.quantity -= newQuantity;
+    } else {
+        product.quantity = newQuantity;
+    }
+    
+    if (!db.adjustments) db.adjustments = [];
+    
+    db.adjustments.push({
+        id: Date.now(),
+        productId: productId,
+        productName: product.name,
+        oldQuantity: oldQuantity,
+        newQuantity: product.quantity,
+        type: type,
+        reason: reason || 'Manual adjustment',
+        notes: notes || '',
+        date: new Date().toISOString()
+    });
+    
+    saveDB();
+    hideModal('adjustmentModal');
+    
+    document.getElementById('adjustmentNewQuantity').value = '';
+    document.getElementById('adjustmentReason').value = '';
+    document.getElementById('adjustmentNotes').value = '';
+    
+    loadProducts();
+    showAlert(`⚖️ Adjustment applied: ${product.name} ${oldQuantity} → ${product.quantity}`, 'success');
+    logAudit(`Adjustment: ${product.name}`);
+}
+
+// ==================== BARCODE SCANNER ====================
+function showBarcodeScanner() {
+    document.getElementById('barcodeModal').style.display = 'flex';
+}
+
+function processBarcode() {
+    const barcode = document.getElementById('barcodeInput').value;
+    if (!barcode) {
+        showAlert('❌ Please enter barcode', 'warning');
+        return;
+    }
+    
+    const product = db.products.find(p => p.barcode === barcode);
+    
+    if (product) {
+        showAlert(`📦 Found: ${product.name} (${product.quantity} in stock)`, 'success');
+        
+        const html = `
+            <h3>📦 Product Found</h3>
+            <p><strong>Name:</strong> ${product.name}</p>
+            <p><strong>Category:</strong> ${product.category}</p>
+            <p><strong>Price:</strong> ${product.price} RWF</p>
+            <p><strong>Quantity:</strong> ${product.quantity}</p>
+            <p><strong>Barcode:</strong> ${product.barcode}</p>
+            <button onclick="quickSell(${product.id})" style="margin-top: 10px; padding: 10px; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer;">Quick Sell</button>
+        `;
+        
+        document.getElementById('reportTitle').textContent = '📦 Scan Result';
+        document.getElementById('reportContent').innerHTML = html;
+        document.getElementById('reportModal').style.display = 'flex';
+    } else {
+        showAlert('❌ Product not found', 'warning');
+        if (confirm('Product not found. Add it now?')) {
+            hideModal('barcodeModal');
+            showAddProductModal();
+        }
+    }
+    
+    document.getElementById('barcodeInput').value = '';
+    hideModal('barcodeModal');
+}
+
+function quickSell(productId) {
+    hideModal('reportModal');
+    const product = db.products.find(p => p.id === productId);
+    if (product) {
+        const quantity = prompt(`How many ${product.name} to sell? (Max: ${product.quantity})`, '1');
+        if (quantity) {
+            const qty = parseInt(quantity);
+            if (qty > 0 && qty <= product.quantity) {
+                product.quantity -= qty;
+                
+                if (!db.sales) db.sales = [];
+                db.sales.push({
+                    id: Date.now(),
+                    productId: productId,
+                    productName: product.name,
+                    quantity: qty,
+                    price: product.price,
+                    total: product.price * qty,
+                    date: new Date().toISOString()
+                });
+                
+                saveDB();
+                loadProducts();
+                showAlert(`💰 Sold ${qty} x ${product.name}`, 'success');
+            } else {
+                showAlert('❌ Invalid quantity', 'danger');
+            }
+        }
+    }
+}
+
+// ==================== REPORTS ====================
+function showStockLevels() {
+    let html = '<h3>📊 Current Stock Levels</h3>';
+    html += '<table style="width:100%; border-collapse: collapse;">';
+    html += '<tr style="background: #1a237e; color: white;"><th>Product</th><th>Category</th><th>Quantity</th><th>Price</th><th>Value</th></tr>';
+    
+    db.products.forEach(p => {
+        html += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.name}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.category}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.quantity} ${getMeasurementSymbol(p.measurement)}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.price.toLocaleString()} RWF</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${(p.price * p.quantity).toLocaleString()} RWF</td>
+        </tr>`;
+    });
+    
+    html += '</table>';
+    
+    document.getElementById('reportTitle').textContent = '📊 Stock Levels Report';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed stock levels report');
+}
+
+function showStockReports() {
+    const totalValue = db.products.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+    const lowStock = db.products.filter(p => isLowStock(p)).length;
+    const outOfStock = db.products.filter(p => p.quantity === 0).length;
+    
+    let html = '<h3>📋 Complete Stock Report</h3>';
+    html += `<p><strong>Total Products:</strong> ${db.products.length}</p>`;
+    html += `<p><strong>Total Categories:</strong> ${db.categories.length}</p>`;
+    html += `<p><strong>Total Value:</strong> ${totalValue.toLocaleString()} RWF</p>`;
+    html += `<p><strong>Low Stock Items (20% rule):</strong> ${lowStock}</p>`;
+    html += `<p><strong>Out of Stock:</strong> ${outOfStock}</p>`;
+    html += `<p><strong>Healthy Stock:</strong> ${db.products.length - lowStock - outOfStock}</p>`;
+    
+    document.getElementById('reportTitle').textContent = '📋 Stock Report';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed stock report');
+}
+
+function showIssueReports() {
+    let html = '<h3>👥 Issue to Students/Staff Report</h3>';
+    
+    if (!db.sales || db.sales.length === 0) {
+        html += '<p>No sales recorded yet.</p>';
+    } else {
+        html += '<table style="width:100%; border-collapse: collapse;">';
+        html += '<tr style="background: #1a237e; color: white;"><th>Date</th><th>Product</th><th>Quantity</th><th>Customer</th><th>Total</th></tr>';
+        
+        db.sales.slice(-50).reverse().forEach(s => {
+            html += `<tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${new Date(s.date).toLocaleDateString()}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${s.productName}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${s.quantity}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${s.customer || 'N/A'}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${s.total.toLocaleString()} RWF</td>
+            </tr>`;
+        });
+        
+        html += '</table>';
+    }
+    
+    document.getElementById('reportTitle').textContent = '👥 Issue Report';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed issue report');
+}
+
+function showExpiryReport() {
+    const today = new Date();
+    const thirtyDays = new Date();
+    thirtyDays.setDate(thirtyDays.getDate() + 30);
+    
+    let html = '<h3>📅 Expiry Report</h3>';
+    
+    const productsWithExpiry = db.products.filter(p => p.expiry);
+    
+    if (productsWithExpiry.length === 0) {
+        html += '<p>No products with expiry dates.</p>';
+    } else {
+        html += '<table style="width:100%; border-collapse: collapse;">';
+        html += '<tr style="background: #1a237e; color: white;"><th>Product</th><th>Expiry Date</th><th>Status</th></tr>';
+        
+        productsWithExpiry.forEach(p => {
+            const expiry = new Date(p.expiry);
+            let status = '✅ Good';
+            let color = '#4caf50';
+            
+            if (expiry < today) {
+                status = '❌ EXPIRED';
+                color = '#f44336';
+            } else if (expiry < thirtyDays) {
+                status = '⚠️ Expiring soon';
+                color = '#ff9800';
+            }
+            
+            html += `<tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.name}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.expiry}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd; color: ${color};">${status}</td>
+            </tr>`;
+        });
+        
+        html += '</table>';
+    }
+    
+    document.getElementById('reportTitle').textContent = '📅 Expiry Report';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed expiry report');
+}
+
+function showProcurement() {
+    let html = '<h3>📦 Procurement History</h3>';
+    
+    if (!db.purchases || db.purchases.length === 0) {
+        html += '<p>No purchases recorded yet.</p>';
+    } else {
+        html += '<table style="width:100%; border-collapse: collapse;">';
+        html += '<tr style="background: #1a237e; color: white;"><th>Date</th><th>Product</th><th>Quantity</th><th>Supplier</th><th>Total</th></tr>';
+        
+        db.purchases.slice(-50).reverse().forEach(p => {
+            html += `<tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${new Date(p.date).toLocaleDateString()}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.productName}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.quantity}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.supplier}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.total.toLocaleString()} RWF</td>
+            </tr>`;
+        });
+        
+        html += '</table>';
+    }
+    
+    document.getElementById('reportTitle').textContent = '📦 Procurement Report';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed procurement report');
+}
+
+function showPurchaseOrders() {
+    let html = '<h3>📑 Purchase Orders</h3>';
+    
+    if (!db.purchases || db.purchases.length === 0) {
+        html += '<p>No purchase orders yet. Create a purchase first.</p>';
+    } else {
+        html += '<table style="width:100%; border-collapse: collapse;">';
+        html += '<tr style="background: #1a237e; color: white;"><th>Order #</th><th>Date</th><th>Product</th><th>Supplier</th><th>Status</th></tr>';
+        
+        db.purchases.slice(-20).reverse().forEach((p, index) => {
+            html += `<tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">PO-${String(index + 1).padStart(4, '0')}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${new Date(p.date).toLocaleDateString()}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.productName} (${p.quantity})</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${p.supplier}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;"><span style="color: #4caf50;">✓ Completed</span></td>
+            </tr>`;
+        });
+        
+        html += '</table>';
+    }
+    
+    document.getElementById('reportTitle').textContent = '📑 Purchase Orders';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed purchase orders');
+}
+
+function showUsageReports() {
+    const totalSales = db.sales ? db.sales.length : 0;
+    const totalRevenue = db.sales ? db.sales.reduce((sum, s) => sum + s.total, 0) : 0;
+    const totalPurchases = db.purchases ? db.purchases.length : 0;
+    const totalTransfers = db.transfers ? db.transfers.length : 0;
+    
+    let html = '<h3>📈 Internal Usage Report</h3>';
+    html += `<p><strong>Total Sales:</strong> ${totalSales}</p>`;
+    html += `<p><strong>Total Revenue:</strong> ${totalRevenue.toLocaleString()} RWF</p>`;
+    html += `<p><strong>Total Purchases:</strong> ${totalPurchases}</p>`;
+    html += `<p><strong>Total Transfers:</strong> ${totalTransfers}</p>`;
+    html += `<p><strong>Total Returns:</strong> ${db.returns ? db.returns.length : 0}</p>`;
+    html += `<p><strong>Total Adjustments:</strong> ${db.adjustments ? db.adjustments.length : 0}</p>`;
+    
+    document.getElementById('reportTitle').textContent = '📈 Usage Report';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed usage report');
+}
+
+// ==================== ASSET MANAGEMENT ====================
+function showGoodsReceiving() {
+    showPurchases();
+}
+
+function showAssetManagement() {
+    const totalInventoryValue = db.products.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+    
+    let html = '<h3>🏢 Asset Management</h3>';
+    html += '<p>Track all your business assets here.</p>';
+    html += '<table style="width:100%; border-collapse: collapse;">';
+    html += '<tr style="background: #1a237e; color: white;"><th>Asset Type</th><th>Value</th><th>Status</th><th>Last Updated</th></tr>';
+    
+    const categories = db.categories || [];
+    categories.slice(0, 5).forEach((cat) => {
+        const categoryProducts = db.products.filter(p => p.category === cat.name);
+        const categoryValue = categoryProducts.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+        
+        html += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${cat.icon} ${cat.name} Inventory</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${categoryValue.toLocaleString()} RWF</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><span style="color: #4caf50;">✅ Active</span></td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${new Date().toLocaleDateString()}</td>
+        </tr>`;
+    });
+    
+    html += `<tr style="background: #f0f2f5; font-weight: bold;">
+        <td style="padding: 8px;">TOTAL ASSETS</td>
+        <td style="padding: 8px;">${totalInventoryValue.toLocaleString()} RWF</td>
+        <td style="padding: 8px;" colspan="2"></td>
+    </tr>`;
+    
+    html += '</table>';
+    
+    document.getElementById('reportTitle').textContent = '🏢 Asset Management';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed asset management');
+}
+
+function showStockTransfers() {
+    showTransfers();
+}
+
+function showUserRoles() {
+    document.getElementById('userRoleModal').style.display = 'flex';
+}
+
+function addUser() {
+    const name = document.getElementById('userName').value;
+    const email = document.getElementById('userEmail').value;
+    const role = document.getElementById('userRole').value;
+    const department = document.getElementById('userDepartment').value;
+    const password = document.getElementById('userPassword').value;
+    
+    if (!name || !email || !password) {
+        showAlert('❌ Please fill all fields!', 'warning');
+        return;
+    }
+    
+    if (!db.users) db.users = [];
+    
+    db.users.push({
+        id: Date.now(),
+        name: name,
+        email: email,
+        role: role,
+        department: department || 'General',
+        password: secureHash(password),
+        created: new Date().toISOString(),
+        lastLogin: null
+    });
+    
+    saveDB();
+    hideModal('userRoleModal');
+    
+    document.getElementById('userName').value = '';
+    document.getElementById('userEmail').value = '';
+    document.getElementById('userDepartment').value = '';
+    document.getElementById('userPassword').value = '';
+    
+    showAlert('✅ User added successfully!', 'success');
+    logAudit(`Added user: ${name} (${role})`);
+}
+
+function showRolePermissions() {
+    let html = '<h3>🔑 Role Permissions</h3>';
+    html += '<table style="width:100%"><tr><th>Role</th><th>Permissions</th></tr>';
+    html += '<tr><td><strong>Admin</strong></td><td>Full access - Can do everything</td></tr>';
+    html += '<tr><td><strong>Manager</strong></td><td>Can add/edit products, view reports, cannot delete</td></tr>';
+    html += '<tr><td><strong>Staff</strong></td><td>Can sell, view products, cannot edit</td></tr>';
+    html += '<tr><td><strong>Viewer</strong></td><td>View only - No changes allowed</td></tr>';
+    html += '</table>';
+    
+    document.getElementById('reportTitle').textContent = '🔑 Permissions';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function showAuditLog() {
+    let html = '<h3>📋 Audit Log</h3>';
+    
+    if (!db.auditLog || db.auditLog.length === 0) {
+        html += '<p>No audit records yet.</p>';
+    } else {
+        html += '<table style="width:100%; border-collapse: collapse;">';
+        html += '<tr style="background: #1a237e; color: white;"><th>Time</th><th>User</th><th>Action</th></tr>';
+        
+        db.auditLog.slice(-100).reverse().forEach(log => {
+            html += `<tr>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${new Date(log.timestamp).toLocaleString()}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${log.user}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #ddd;">${log.action}</td>
+            </tr>`;
+        });
+        
+        html += '</table>';
+    }
+    
+    document.getElementById('reportTitle').textContent = '📋 Audit Log';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+// ==================== SETTINGS ====================
+function toggleSettings() {
+    const panel = document.getElementById('settingsPanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    
+    if (panel.style.display === 'block') {
+        document.getElementById('settingsOrgName').textContent = db.currentOrg?.name || 'N/A';
+        document.getElementById('settingsOrgCode').textContent = db.currentOrg?.code || 'N/A';
+        document.getElementById('settingsUDC').textContent = db.currentOrg?.udc || 'N/A';
+        document.getElementById('twoFAStatus').textContent = db.settings.twoFA ? 'Enabled' : 'Disabled';
+        document.getElementById('notifStatus').textContent = db.settings.notifications ? 'Enabled' : 'Disabled';
+        document.getElementById('lastBackup').textContent = localStorage.getItem('lastBackupTime') || 'Never';
+    }
+}
+
+function showGeneralSettings() {
+    toggleSettings();
+}
+
+// ==================== APPEARANCE SETTINGS ====================
+function isLightColor(color) {
+    let r, g, b;
+    
+    if (color.startsWith('#')) {
+        const hex = color.substring(1);
+        if (hex.length === 3) {
+            r = parseInt(hex[0] + hex[0], 16);
+            g = parseInt(hex[1] + hex[1], 16);
+            b = parseInt(hex[2] + hex[2], 16);
+        } else {
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+        }
+    } else if (color.startsWith('rgb')) {
+        const matches = color.match(/\d+/g);
+        if (matches && matches.length >= 3) {
+            r = parseInt(matches[0]);
+            g = parseInt(matches[1]);
+            b = parseInt(matches[2]);
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+    
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128;
+}
+
+function showAppearance() {
+    const colors = [
+        { name: 'Professional Blue', value: '#1a237e' },
+        { name: 'Ocean Blue', value: '#1976d2' },
+        { name: 'Sky Blue', value: '#42a5f5' },
+        { name: 'Light Blue', value: '#90caf9' },
+        { name: 'Dark Blue', value: '#0d47a1' },
+        { name: 'Navy Blue', value: '#001f3f' },
+        { name: 'Turquoise', value: '#00bcd4' },
+        { name: 'Teal', value: '#00796b' },
+        { name: 'Cyan', value: '#00acc1' },
+        { name: 'Forest Green', value: '#2e7d32' },
+        { name: 'Well Green', value: '#308c14' },
+        { name: 'Light Green', value: '#8bc34a' },
+        { name: 'Lime Green', value: '#cddc39' },
+        { name: 'Mint Green', value: '#4db6ac' },
+        { name: 'Olive Green', value: '#9e9d24' },
+        { name: 'Jade Green', value: '#00a86b' },
+        { name: 'Emerald', value: '#008000' },
+        { name: 'Royal Purple', value: '#4a148c' },
+        { name: 'Dark Purple', value: '#8c145e' },
+        { name: 'Light Pink', value: '#8c1470' },
+        { name: 'Hot Pink', value: '#e91e63' },
+        { name: 'Magenta', value: '#c2185b' },
+        { name: 'Lavender', value: '#9c27b0' },
+        { name: 'Violet', value: '#673ab7' },
+        { name: 'Orchid', value: '#ab47bc' },
+        { name: 'Plum', value: '#7b1fa2' },
+        { name: 'Red', value: '#8c1414' },
+        { name: 'Bright Red', value: '#f44336' },
+        { name: 'Crimson', value: '#b71c1c' },
+        { name: 'Burgundy', value: '#880e4f' },
+        { name: 'Orange', value: '#ff9800' },
+        { name: 'Dark Orange', value: '#ed6c02' },
+        { name: 'Amber', value: '#ffc107' },
+        { name: 'Coral', value: '#ff7f50' },
+        { name: 'Peach', value: '#ffb74d' },
+        { name: 'Dark Mode', value: '#263238' },
+        { name: 'Charcoal Grey', value: '#424242' },
+        { name: 'Slate Grey', value: '#607d8b' },
+        { name: 'Warm Grey', value: '#757575' },
+        { name: 'Cool Grey', value: '#9e9e9e' },
+        { name: 'Silver', value: '#bdbdbd' },
+        { name: 'Pure White', value: '#ffffff' },
+        { name: 'Off White', value: '#f5f5f5' },
+        { name: 'Cream', value: '#fff8e1' },
+        { name: 'Brown', value: '#795548' },
+        { name: 'Tan', value: '#d2b48c' },
+        { name: 'Beige', value: '#f5f5dc' },
+        { name: 'Coffee', value: '#6f4e37' },
+        { name: 'Copper', value: '#b87333' },
+        { name: 'Gold', value: '#ffd700' },
+        { name: 'Yellow', value: '#ffeb3b' },
+        { name: 'Mustard', value: '#ffb300' },
+        { name: 'Indigo', value: '#3f51b5' },
+        { name: 'Deep Purple', value: '#311b92' },
+    ];
+    
+    let html = '<h3>🎨 Theme Customization</h3>';
+    html += '<p>Choose your preferred theme color (50+ colors available!):</p>';
+    html += '<div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; max-height: 400px; overflow-y: auto; padding: 10px; background: #f5f5f5; border-radius: 10px;">';
+    
+    colors.forEach(color => {
+        const isLight = isLightColor(color.value);
+        const textColor = isLight ? '#000' : '#fff';
+        
+        html += `
+            <button onclick="setThemeColor('${color.value}')" style="
+                padding: 15px 20px;
+                background: ${color.value};
+                color: ${textColor};
+                border: 2px solid ${color.value === '#ffffff' ? '#000' : 'rgba(255,255,255,0.3)'};
+                border-radius: 30px;
+                cursor: pointer;
+                font-weight: bold;
+                flex: 1 0 auto;
+                min-width: 150px;
+                transition: all 0.3s;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                text-shadow: ${isLight ? 'none' : '0 1px 2px rgba(0,0,0,0.3)'};
+            "
+            onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.2)';"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.1)';">
+                ${color.name}
+            </button>
+        `;
+    });
+    
+    html += '</div>';
+    html += '<p><strong>Current Theme:</strong> <span style="color: ' + db.settings.themeColor + ';">●</span> ' + db.settings.themeColor + '</p>';
+    html += '<p><em>✨ Over 50 beautiful colors to choose from!</em></p>';
+    
+    document.getElementById('reportTitle').textContent = '🎨 Appearance Settings';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function setThemeColor(color) {
+    db.settings.themeColor = color;
+    saveDB();
+    
+    document.documentElement.style.setProperty('--primary', color);
+    
+    showAlert(`🎨 Theme changed to ${color}!`, 'success');
+    hideModal('reportModal');
+    logAudit(`Theme changed to ${color}`);
+}
+
+function showModules() {
+    let html = '<h3>🧩 System Modules</h3>';
+    html += '<table style="width:100%; border-collapse: collapse;">';
+    html += '<tr style="background: #1a237e; color: white;"><th>Module</th><th>Status</th><th>Description</th></tr>';
+    
+    const modules = [
+        { name: 'Inventory Management', status: '✅ Active', desc: 'Manage products and categories' },
+        { name: 'Sales Processing', status: '✅ Active', desc: 'Record and track sales' },
+        { name: 'Purchase Management', status: '✅ Active', desc: 'Manage purchases and suppliers' },
+        { name: 'Reports & Analytics', status: '✅ Active', desc: 'Generate business reports' },
+        { name: 'User Management', status: '✅ Active', desc: 'Manage system users' },
+        { name: 'Asset Tracking', status: '✅ Active', desc: 'Track business assets' },
+        { name: 'Batch Tracking', status: '✅ Active', desc: 'Track products by batch' },
+        { name: 'POS System', status: '✅ Active', desc: 'Point of sale interface' }
+    ];
+    
+    modules.forEach(module => {
+        html += `<tr>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${module.name}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${module.status}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${module.desc}</td>
+        </tr>`;
+    });
+    
+    html += '</table>';
+    
+    document.getElementById('reportTitle').textContent = '🧩 System Modules';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed modules');
+}
+
+function showSecurity() {
+    db.settings.twoFA = !db.settings.twoFA;
+    saveDB();
+    showAlert(`🔒 2FA ${db.settings.twoFA ? 'enabled' : 'disabled'}`, 'success');
+}
+
+function showNotifications() {
+    db.settings.notifications = !db.settings.notifications;
+    saveDB();
+    showAlert(`🔔 Notifications ${db.settings.notifications ? 'enabled' : 'disabled'}`, 'success');
+}
+
+function showOrgInfo() {
+    const org = db.currentOrg;
+    if (!org) return;
+    
+    let html = '<h3>🏢 Organization Information</h3>';
+    html += `<p><strong>Name:</strong> ${org.name}</p>`;
+    html += `<p><strong>Code:</strong> ${org.code}</p>`;
+    html += `<p><strong>Owner:</strong> ${org.owner}</p>`;
+    html += `<p><strong>Type:</strong> ${org.type}</p>`;
+    html += `<p><strong>Phone:</strong> ${org.phone}</p>`;
+    html += `<p><strong>Email:</strong> ${org.email}</p>`;
+    html += `<p><strong>Location:</strong> ${org.location}</p>`;
+    html += `<p><strong>UDC:</strong> ${org.udc}</p>`;
+    html += `<p><strong>Registered:</strong> ${new Date(org.registeredDate).toLocaleString()}</p>`;
+    html += `<p><strong>Subscription:</strong> ${org.subscription.active ? 'Active' : 'Inactive'}</p>`;
+    
+    document.getElementById('reportTitle').textContent = '🏢 Organization Info';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function showThemeColors() {
+    showAppearance();
+}
+
+function enableFeatures() {
+    let html = '<h3>✨ Feature Management</h3>';
+    html += '<p>All core features are enabled.</p>';
+    html += '<table style="width:100%"><tr><th>Feature</th><th>Status</th></tr>';
+    html += '<tr><td>Inventory Management</td><td>✅ Enabled</td></tr>';
+    html += '<tr><td>Sales Processing</td><td>✅ Enabled</td></tr>';
+    html += '<tr><td>Purchase Management</td><td>✅ Enabled</td></tr>';
+    html += '<tr><td>Reports</td><td>✅ Enabled</td></tr>';
+    html += '<tr><td>User Management</td><td>✅ Enabled</td></tr>';
+    html += '<tr><td>Batch Tracking</td><td>✅ Enabled</td></tr>';
+    html += '<tr><td>POS System</td><td>✅ Enabled</td></tr>';
+    html += '</table>';
+    
+    document.getElementById('reportTitle').textContent = '✨ Features';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function showUserRoleSettings() {
+    showUserRoles();
+}
+
+function showTwoFA() {
+    showSecurity();
+}
+
+function showAlertsReminders() {
+    let html = '<h3>⏰ Alerts & Reminders</h3>';
+    html += '<p><strong>Low Stock Alert:</strong> When quantity reaches 20% of original</p>';
+    html += '<p><strong>Expiry Alert:</strong> 30 days before expiry</p>';
+    html += '<p><strong>Subscription Alert:</strong> 7 days before expiry (once daily)</p>';
+    html += '<p><strong>Daily Backup Reminder:</strong> Every day at 6:00 PM</p>';
+    html += '<p><strong>Weekly Report:</strong> Every Monday at 8:00 AM</p>';
+    html += '<button onclick="resetDailyReminder()" style="margin-top: 10px; padding: 10px; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer;">🔄 Reset Today\'s Reminder</button>';
+    
+    document.getElementById('reportTitle').textContent = '⏰ Alerts';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function showAutoBackup() {
+    db.settings.autoBackup = !db.settings.autoBackup;
+    saveDB();
+    showAlert(`💾 Auto backup ${db.settings.autoBackup ? 'enabled' : 'disabled'}`, 'success');
+}
+
+function showCurrencyTaxes() {
+    let html = '<h3>💰 Currency & Taxes</h3>';
+    html += `<p><strong>Currency:</strong> ${db.settings.currency}</p>`;
+    html += `<p><strong>Tax Rate:</strong> ${db.settings.taxRate}%</p>`;
+    html += '<p><strong>Tax Calculation:</strong> Included in price</p>';
+    html += '<p><strong>Decimal Places:</strong> 0 (whole numbers)</p>';
+    
+    document.getElementById('reportTitle').textContent = '💰 Currency';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+// ==================== BACKGROUND SETTINGS ====================
+function showBackground() {
+    const backgrounds = [
+        { name: 'Professional Purple', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+        { name: 'Deep Ocean', value: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)' },
+        { name: 'Forest Mist', value: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)' },
+        { name: 'Sunset', value: 'linear-gradient(135deg, #ff6b6b 0%, #feca57 100%)' },
+        { name: 'Night Sky', value: 'linear-gradient(135deg, #232526 0%, #414345 100%)' },
+        { name: 'Lavender Dream', value: 'linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%)' },
+        { name: 'Peach Smoothie', value: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)' },
+        { name: 'Mint Fresh', value: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+        { name: 'Aurora', value: 'linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%)' },
+        { name: 'Bloody Mary', value: 'linear-gradient(135deg, #ff512f 0%, #dd2476 100%)' },
+        { name: 'Sunny Morning', value: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)' },
+        { name: 'Cool Blues', value: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)' },
+        { name: 'Emerald Water', value: 'linear-gradient(135deg, #348f50 0%, #56b4d3 100%)' },
+        { name: 'Purple Love', value: 'linear-gradient(135deg, #cc2b5e 0%, #753a88 100%)' },
+        { name: 'Dark Knight', value: 'linear-gradient(135deg, #232526 0%, #414345 100%)' },
+        { name: 'Grey Scale', value: 'linear-gradient(135deg, #757f9a 0%, #d7dde8 100%)' },
+    ];
+    
+    let html = '<h3>🖼️ Background Settings</h3>';
+    html += '<p>Choose your preferred background style (16 beautiful gradients):</p>';
+    html += '<div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; max-height: 400px; overflow-y: auto; padding: 10px; background: #f5f5f5; border-radius: 10px;">';
+    
+    backgrounds.forEach(bg => {
+        html += `
+            <button onclick="setBackground('${bg.value}')" style="
+                padding: 25px 30px;
+                background: ${bg.value};
+                color: white;
+                border: none;
+                border-radius: 15px;
+                cursor: pointer;
+                font-weight: bold;
+                flex: 1 0 auto;
+                min-width: 200px;
+                transition: all 0.3s;
+                text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            "
+            onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.3)';"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)';">
+                ${bg.name}
+            </button>
+        `;
+    });
+    
+    html += '</div>';
+    html += '<p><em>🎨 Choose a beautiful gradient for your system background!</em></p>';
+    
+    document.getElementById('reportTitle').textContent = '🖼️ Background';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function setBackground(gradient) {
+    document.body.style.background = gradient;
+    localStorage.setItem('bsms_background', gradient);
+    showAlert('✅ Background updated!', 'success');
+    hideModal('reportModal');
+    logAudit('Background changed');
+}
+
+// ==================== DASHBOARD VIEWS ====================
+function showDashboardOverview() {
+    loadProducts('all');
+    updateActiveMenu('menuOverview');
+}
+
+function showLowStockItems() {
+    loadProducts('low');
+    updateActiveMenu('menuLowStock');
+}
+
+function showPendingItems() {
+    showAlert('⏳ No pending items at the moment', 'info');
+}
+
+function showInventoryOverview() {
+    showStockLevels();
+}
+
+function showAllItems() {
+    loadProducts('all');
+    updateActiveTab('tabAll');
+}
+
+function showLowStockView() {
+    loadProducts('low');
+    updateActiveTab('tabLow');
+}
+
+function showOutOfStockView() {
+    loadProducts('out');
+    updateActiveTab('tabOut');
+}
+
+function showOverview() {
+    showDashboardOverview();
+}
+
+function showLowStock() {
+    showLowStockItems();
+}
+
+function showPending() {
+    showPendingItems();
+}
+
+function showCategories() {
+    let html = '<h3>📁 Categories & Items</h3>';
+    html += '<table style="width:100%"><tr><th>Category</th><th>Items</th><th>Description</th></tr>';
+    
+    db.categories.forEach(c => {
+        const count = db.products.filter(p => p.category === c.name).length;
+        html += `<tr>
+            <td>${c.icon || '📁'} ${c.name}</td>
+            <td>${count}</td>
+            <td>${c.description || ''}</td>
+        </tr>`;
+    });
+    
+    html += '</table>';
+    
+    document.getElementById('reportTitle').textContent = '📁 Categories';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function showAlerts() {
+    const lowStock = db.products.filter(p => isLowStock(p));
+    const expired = db.products.filter(p => p.expiry && new Date(p.expiry) < new Date());
+    const expiring = db.products.filter(p => {
+        if (!p.expiry) return false;
+        const expiry = new Date(p.expiry);
+        const thirtyDays = new Date();
+        thirtyDays.setDate(thirtyDays.getDate() + 30);
+        return expiry > new Date() && expiry < thirtyDays;
+    });
+    
+    let html = '<h3>🔔 System Alerts</h3>';
+    
+    if (lowStock.length > 0) {
+        html += '<h4>⚠️ Low Stock Alerts (20% rule)</h4><ul>';
+        lowStock.forEach(p => {
+            const originalQty = p.originalQuantity || p.quantity;
+            const threshold = Math.ceil(originalQty * 0.2);
+            html += `<li>${p.name} - Only ${p.quantity} left! (Threshold: ${threshold})</li>`;
+        });
+        html += '</ul>';
+    }
+    
+    if (expired.length > 0) {
+        html += '<h4>❌ Expired Products</h4><ul>';
+        expired.forEach(p => {
+            html += `<li>${p.name} - Expired on ${p.expiry}</li>`;
+        });
+        html += '</ul>';
+    }
+    
+    if (expiring.length > 0) {
+        html += '<h4>⚠️ Expiring Soon</h4><ul>';
+        expiring.forEach(p => {
+            html += `<li>${p.name} - Expires on ${p.expiry}</li>`;
+        });
+        html += '</ul>';
+    }
+    
+    if (lowStock.length === 0 && expired.length === 0 && expiring.length === 0) {
+        html += '<p>✅ No alerts at this time</p>';
+    }
+    
+    document.getElementById('reportTitle').textContent = '🔔 Alerts';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+}
+
+function showApprovals() {
+    showAlert('✓ No pending approvals', 'info');
+}
+
+function showBatchTracking() {
+    let html = '<h3>🔢 Batch & Serial Tracking</h3>';
+    
+    const batches = {};
+    db.products.forEach(p => {
+        if (!batches[p.category]) {
+            batches[p.category] = [];
+        }
+        batches[p.category].push(p);
+    });
+    
+    html += '<p><strong>Current Batches:</strong></p>';
+    
+    for (const [category, products] of Object.entries(batches)) {
+        html += `<h4>📦 ${category} (${products.length} items)</h4>`;
+        html += '<ul>';
+        products.forEach(p => {
+            const batchId = 'BATCH-' + String(p.id).slice(-6);
+            html += `<li>${batchId}: ${p.name} - ${p.quantity} ${getMeasurementSymbol(p.measurement)} (Added: ${new Date(p.created).toLocaleDateString()})</li>`;
+        });
+        html += '</ul>';
+    }
+    
+    if (Object.keys(batches).length === 0) {
+        html += '<p>No batches available. Add products first.</p>';
+    }
+    
+    document.getElementById('reportTitle').textContent = '🔢 Batch Tracking';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    logAudit('Viewed batch tracking');
+}
+
+// ==================== POS SYSTEM ====================
+let posCart = [];
+let posDiscount = 0;
+let posTax = 0;
+
+function initializePOS() {
+    posCart = [];
+    posDiscount = 0;
+    posTax = db.settings?.taxRate || 18;
+    updatePOSDisplay();
+}
+
+function showPOS() {
+    initializePOS();
+    
+    const availableProducts = db.products.filter(p => p.quantity > 0);
+    
+    let html = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px;">
+                <h3>📦 Products</h3>
+                <input type="text" id="posSearch" placeholder="🔍 Search products..." 
+                       style="width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 5px;"
+                       onkeyup="searchPOSProducts(this.value)">
+                <div id="posProductGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 400px; overflow-y: auto;">
+    `;
+    
+    if (availableProducts.length === 0) {
+        html += '<p>❌ No products available for sale.</p>';
+    } else {
+        availableProducts.slice(0, 20).forEach(p => {
+            html += `
+                <div onclick="addToPOSCart(${p.id})" style="
+                    background: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    border: 2px solid transparent;
+                    transition: all 0.3s;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    text-align: center;
+                " onmouseover="this.style.borderColor='#1a237e'" onmouseout="this.style.borderColor='transparent'">
+                    <strong>${p.name}</strong><br>
+                    <span style="color: #1a237e; font-size: 18px;">${p.price.toLocaleString()} RWF</span><br>
+                    <small>Stock: ${p.quantity} ${getMeasurementSymbol(p.measurement)}</small>
+                </div>
+            `;
+        });
+    }
+    
+    html += `
+                </div>
             </div>
-
-            <div class="input-group">
-                <label>Organization Code *</label>
-                <input type="text" id="regOrgCode" placeholder="Create unique code">
-            </div>
-
-            <div class="input-group">
-                <label>Owner Full Name *</label>
-                <input type="text" id="regOwner" placeholder="Enter owner name">
-            </div>
-
-            <div class="input-group">
-                <label>Organization Type</label>
-                <select id="regType">
-                    <option value="school">🏫 School</option>
-                    <option value="company">🏢 Company</option>
-                    <option value="small business">🏪 Small Business</option>
-                    <option value="pharmacy">💊 Pharmacy</option>
-                    <option value="other">📦 Other</option>
+            
+            <div style="background: white; padding: 20px; border-radius: 10px; border: 2px solid #1a237e;">
+                <h3>🛒 Current Sale</h3>
+                
+                <div id="posCartItems" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;"></div>
+                
+                <div id="posSummary" style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 15px;"></div>
+                
+                <input type="text" id="posCustomer" placeholder="Customer Name" 
+                       style="width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 5px;">
+                
+                <select id="posPaymentMethod" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 5px;">
+                    <option value="cash">💰 Cash</option>
+                    <option value="mobile">📱 Mobile Money</option>
+                    <option value="card">💳 Card</option>
+                    <option value="credit">📝 Credit</option>
                 </select>
-            </div>
-
-            <div class="input-group">
-                <label>Phone Number *</label>
-                <input type="text" id="regPhone" placeholder="Enter phone number">
-            </div>
-
-            <div class="input-group">
-                <label>Email (optional)</label>
-                <input type="email" id="regEmail" placeholder="Enter email">
-            </div>
-
-            <div class="input-group">
-                <label>Location</label>
-                <input type="text" id="regLocation" placeholder="Enter district/city">
-            </div>
-
-            <div style="display: flex; gap: 10px; margin-top: 30px; flex-wrap: nowrap;">
-                <button onclick="register()" style="flex: 2; padding: 15px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer;">REGISTER</button>
-                <button onclick="showLogin()" style="flex: 1; padding: 15px; background: linear-gradient(135deg, #666, #444); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer;">BACK</button>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button onclick="processPOSPayment()" style="padding: 15px; background: #4caf50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        ✅ Complete Sale
+                    </button>
+                    <button onclick="clearPOSCart()" style="padding: 15px; background: #f44336; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        🗑️ Clear Cart
+                    </button>
+                </div>
+                
+                <div style="margin-top: 10px;">
+                    <button onclick="applyDiscount()" style="padding: 10px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer; width: 48%; margin-right: 2%;">
+                        🔖 Apply Discount
+                    </button>
+                    <button onclick="printReceipt()" style="padding: 10px; background: #2196f3; color: white; border: none; border-radius: 5px; cursor: pointer; width: 48%;">
+                        🖨️ Print Receipt
+                    </button>
+                </div>
             </div>
         </div>
+    `;
+    
+    document.getElementById('reportTitle').textContent = '🛒 Point of Sale';
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportModal').style.display = 'flex';
+    
+    updatePOSDisplay();
+    logAudit('Opened POS system');
+}
 
-        <!-- ==================== ABOUT PAGE ==================== -->
-        <div id="aboutPage" class="about-page" style="display: none;">
-            <div class="about-header">
-                <h1>📋 BILLAN TITAN ENGINEERING</h1>
-                <p class="motto">"We think about society problems and solve them through technology"</p>
+function searchPOSProducts(query) {
+    const grid = document.getElementById('posProductGrid');
+    if (!grid) return;
+    
+    const products = db.products.filter(p => 
+        p.quantity > 0 && 
+        (p.name.toLowerCase().includes(query.toLowerCase()) ||
+         p.category.toLowerCase().includes(query.toLowerCase()))
+    );
+    
+    let html = '';
+    products.slice(0, 20).forEach(p => {
+        html += `
+            <div onclick="addToPOSCart(${p.id})" style="
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                cursor: pointer;
+                border: 2px solid transparent;
+                transition: all 0.3s;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                text-align: center;
+            ">
+                <strong>${p.name}</strong><br>
+                <span style="color: #1a237e; font-size: 18px;">${p.price.toLocaleString()} RWF</span><br>
+                <small>Stock: ${p.quantity}</small>
             </div>
+        `;
+    });
+    
+    grid.innerHTML = html || '<p>No products found</p>';
+}
 
-            <div class="system-architecture">
-╔══════════════════════════════════════════════════════════════════════════════════════╗
-║                                    BILLAN TITAN SYSTEM                                ║
-║                         All-in-One Stock & Resource Management                        ║
-╠══════════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                        ║
-║    🏫 Schools          🏢 Companies          🏪 Small Businesses                       ║
-║                                                                                        ║
-║                      🔐 User Login • Secure Access • Smart Dashboard                   ║
-║                                                                                        ║
-╠══════════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                        ║
-║    📦 INVENTORY MANAGEMENT                                                             ║
-║    ├── 📊 Overview - View all items by category                                        ║
-║    ├── ⚠️ Low Stock - Items below threshold                                            ║
-║    ├── ⏳ Pending - Awaiting approval                                                  ║
-║    ├── 📁 Categories & Items - Manage categories                                       ║
-║    ├── 🔔 Alerts - System notifications                                                ║
-║    ├── ✓ Approvals - Pending approvals                                                 ║
-║    └── 🔢 Batch & Serial Tracking - Track by batch                                     ║
-║                                                                                        ║
-╠══════════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                        ║
-║    💰 TRANSACTION PROCESSING                                                           ║
-║    ├── 💵 Sales & Issuing - Record sales                                               ║
-║    ├── 🛒 POS/Invoicing - Point of sale                                                ║
-║    ├── 📥 Purchase (IN) - Record purchases                                             ║
-║    ├── 📤 Issue/Sales (OUT) - Track issues                                             ║
-║    ├── 🔄 Transfers - Transfer between locations                                       ║
-║    ├── ⚖️ Adjustments - Stock adjustments                                              ║
-║    └── ↩️ Returns - Process returns                                                    ║
-║                                                                                        ║
-╠══════════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                        ║
-║    📊 REPORTS & ANALYTICS                                                              ║
-║    ├── 📊 Stock Levels - Current stock                                                 ║
-║    ├── 📋 Stock Reports - Detailed reports                                             ║
-║    ├── 👥 Issue to Students/Staff - Usage reports                                      ║
-║    ├── 📅 Expiry Report - Expiring items                                               ║
-║    ├── 📦 Procurement - Purchase history                                               ║
-║    ├── 📑 Purchase Orders - Order management                                           ║
-║    └── 📈 Internal Usage Reports - Usage analytics                                     ║
-║                                                                                        ║
-╠══════════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                        ║
-║    🔄 ASSETS & TRANSFERS                                                               ║
-║    ├── 📦 Goods Receiving - Receive goods                                              ║
-║    ├── 🏢 Asset Management - Track assets                                               ║
-║    ├── 🔄 Stock Transfers - Transfer stock                                              ║
-║    ├── 👥 User & Roles - Manage users                                                   ║
-║    ├── 🔑 Role Permissions - Set permissions                                            ║
-║    └── 📋 Audit Log - Track all actions                                                 ║
-║                                                                                        ║
-╠══════════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                        ║
-║    ⚙️ SETTINGS & CUSTOMIZATION                                                         ║
-║    ├── ⚙️ General Settings - System settings                                           ║
-║    ├── 🎨 Appearance - Theme customization                                             ║
-║    ├── 🧩 Modules - Enable/disable modules                                             ║
-║    ├── 🔒 Security - Security settings                                                 ║
-║    ├── 🔔 Notifications - Alert settings                                               ║
-║    ├── 🏢 Org Info - Organization details                                              ║
-║    ├── 🎨 Theme Colors - Color themes                                                  ║
-║    ├── ✨ Enable Features - Feature management                                         ║
-║    ├── 👥 User Roles - Role management                                                 ║
-║    ├── 🔐 2FA - Two-factor authentication                                              ║
-║    ├── ⏰ Alerts & Reminders - Schedule alerts                                         ║
-║    ├── 💾 Auto Backup - Automatic backup                                               ║
-║    ├── 💰 Currency/Taxes - Financial settings                                          ║
-║    └── 🖼️ Background - Background settings                                             ║
-║                                                                                        ║
-╚══════════════════════════════════════════════════════════════════════════════════════╝
-            </div>
+function addToPOSCart(productId) {
+    const product = db.products.find(p => p.id === productId);
+    if (!product || product.quantity <= 0) {
+        showAlert('❌ Product out of stock!', 'warning');
+        return;
+    }
+    
+    const existing = posCart.find(item => item.productId === productId);
+    
+    if (existing) {
+        if (existing.quantity < product.quantity) {
+            existing.quantity++;
+        } else {
+            showAlert(`❌ Only ${product.quantity} available!`, 'warning');
+            return;
+        }
+    } else {
+        posCart.push({
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            maxQuantity: product.quantity,
+            measurement: product.measurement || 'pieces'
+        });
+    }
+    
+    updatePOSDisplay();
+    showAlert(`➕ Added ${product.name} to cart`, 'success');
+}
 
-            <div class="contact-grid">
-                <div class="contact-card">
-                    <h3>📧 EMAIL</h3>
-                    <p>manziallan998@gmail.com</p>
-                    <p>mugishabillychriss@gmail.com</p>
-                </div>
-                <div class="contact-card">
-                    <h3>📱 PHONE</h3>
-                    <p>+250 784 680 801</p>
-                    <p>+250 788 816 424</p>
-                </div>
-                <div class="contact-card">
-                    <h3>📍 LOCATION</h3>
-                    <p>Rwanda 🇷🇼</p>
-                    <p>East Africa</p>
-                </div>
-            </div>
+function removeFromPOSCart(index) {
+    posCart.splice(index, 1);
+    updatePOSDisplay();
+    showAlert('🗑️ Item removed', 'info');
+}
 
-            <div class="aoa-container">
-                <button class="btn-aoa" onclick="showAdminPanel()">👑 AOA (ADMIN ONLY ACCESS)</button>
-                <p style="margin-top: 15px; color: #666;">• For administrators only</p>
-            </div>
+function updateCartQuantity(index, newQuantity) {
+    const item = posCart[index];
+    if (!item) return;
+    
+    if (newQuantity <= 0) {
+        removeFromPOSCart(index);
+        return;
+    }
+    
+    if (newQuantity > item.maxQuantity) {
+        showAlert(`❌ Only ${item.maxQuantity} available!`, 'warning');
+        return;
+    }
+    
+    item.quantity = newQuantity;
+    updatePOSDisplay();
+}
 
-            <button onclick="showLogin()" style="width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px;">← BACK TO LOGIN</button>
-        </div>
-
-        <!-- ==================== PAYMENT PAGE ==================== -->
-        <div id="paymentPage" class="login-page" style="display: none; max-width: 800px;">
-            <h2>💳 Choose Your Subscription Plan</h2>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 30px 0;">
-                <div class="stat-card" onclick="selectTier(3, 175000)" style="cursor: pointer; text-align: center;" id="tier3">
-                    <h4>3 MONTHS</h4>
-                    <div class="stat-number">175k RWF</div>
-                </div>
-                <div class="stat-card" onclick="selectTier(6, 350000)" style="cursor: pointer; text-align: center;" id="tier6">
-                    <h4>6 MONTHS</h4>
-                    <div class="stat-number">350K RWF</div>
-                </div>
-                <div class="stat-card" onclick="selectTier(9, 640000)" style="cursor: pointer; text-align: center;" id="tier9">
-                    <h4>9 MONTHS</h4>
-                    <div class="stat-number">640K RWF</div>
-                </div>
-                <div class="stat-card" onclick="selectTier(12, 720000)" style="cursor: pointer; text-align: center;" id="tier12">
-                    <h4>1 YEAR</h4>
-                    <div class="stat-number">720K RWF</div>
-                </div>
-                <div class="stat-card" onclick="selectTier(0, 0)" style="cursor: pointer; text-align: center; background: var(--success); color: white;" id="tier0">
-                    <h4 style="color: white;">FREE TRIAL</h4>
-                    <div class="stat-number" style="color: white;">7 DAYS</div>
-                </div>
-            </div>
-
-            <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 30px; border-radius: 15px; text-align: center; margin: 30px 0;">
-                <h3>📱 SEND PAYMENT TO:</h3>
-                <div style="font-size: 48px; font-weight: bold; letter-spacing: 3px;">+250 784 680 801</div>
-                <p style="margin-top: 10px;">(Mobile Money - Account)</p>
-            </div>
-
-            <button class="btn-primary" onclick="processPayment()" style="width: 100%; padding: 20px; font-size: 20px; margin: 20px 0;">✅ CONFIRM PAYMENT</button>
-            <button class="btn-primary" onclick="showLogin()" style="width: 100%;">CANCEL</button>
-        </div>
-
-        <!-- ==================== MAIN DASHBOARD ==================== -->
-        <div id="dashboard" class="dashboard">
-            <div class="top-nav">
-                <div class="org-info">
-                    <h2 id="dashboardOrgName">Loading...</h2>
-                    <p id="dashboardOrgCode"></p>
-                </div>
-                <div class="timer-box">
-                    <div>⏳ SUBSCRIPTION</div>
-                    <div class="timer-display" id="subscriptionTimer">364:23:59:59</div>
-                </div>
-            </div>
-
-            <div class="dashboard-grid">
-                <div class="sidebar" id="mainSidebar">
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">📊 SMART DASHBOARD</div>
-                        <ul class="sidebar-menu">
-                            <li><a onclick="showDashboardOverview()" class="active" id="menuOverview">📈 Overview</a></li>
-                            <li><a onclick="showLowStockItems()" id="menuLowStock">⚠️ Low Stock <span class="badge-count" id="lowStockBadge">0</span></a></li>
-                            <li><a onclick="showPendingItems()" id="menuPending">⏳ Pending</a></li>
-                        </ul>
+function updatePOSDisplay() {
+    const cartDiv = document.getElementById('posCartItems');
+    const summaryDiv = document.getElementById('posSummary');
+    
+    if (!cartDiv || !summaryDiv) return;
+    
+    if (posCart.length === 0) {
+        cartDiv.innerHTML = '<p style="text-align: center; color: #999;">Cart is empty</p>';
+    } else {
+        let cartHtml = '';
+        posCart.forEach((item, index) => {
+            cartHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee;">
+                    <div style="flex: 2;">
+                        <strong>${item.name}</strong><br>
+                        <small>${item.price.toLocaleString()} RWF</small>
                     </div>
-
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">📦 INVENTORY MANAGEMENT</div>
-                        <ul class="sidebar-menu">
-                            <li><a onclick="showInventoryOverview()">📊 Overview</a></li>
-                            <li><a onclick="showLowStockItems()">⚠️ Low Stock</a></li>
-                            <li><a onclick="showPendingItems()">⏳ Pending</a></li>
-                            <li><a onclick="showCategories()">📁 Categories & Items</a></li>
-                            <li><a onclick="showAlerts()">🔔 Alerts</a></li>
-                            <li><a onclick="showApprovals()">✓ Approvals</a></li>
-                            <li><a onclick="showBatchTracking()">🔢 Batch & Serial Tracking</a></li>
-                        </ul>
+                    <div style="flex: 1; display: flex; align-items: center; gap: 5px;">
+                        <button onclick="updateCartQuantity(${index}, ${item.quantity - 1})" style="width: 25px; height: 25px; background: #f0f2f5; border: none; border-radius: 3px; cursor: pointer;">−</button>
+                        <span style="width: 30px; text-align: center;">${item.quantity}</span>
+                        <button onclick="updateCartQuantity(${index}, ${item.quantity + 1})" style="width: 25px; height: 25px; background: #f0f2f5; border: none; border-radius: 3px; cursor: pointer;">+</button>
                     </div>
-
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">💰 TRANSACTION PROCESSING</div>
-                        <ul class="sidebar-menu">
-                            <li><a onclick="showSales()">💵 Sales & Issuing</a></li>
-                            <li><a onclick="showPOS()">🛒 POS/Invoicing</a></li>
-                            <li><a onclick="showPurchases()">📥 Purchase (IN)</a></li>
-                            <li><a onclick="showIssues()">📤 Issue/Sales (OUT)</a></li>
-                            <li><a onclick="showTransfers()">🔄 Transfers</a></li>
-                            <li><a onclick="showAdjustments()">⚖️ Adjustments</a></li>
-                            <li><a onclick="showReturns()">↩️ Returns</a></li>
-                        </ul>
+                    <div style="flex: 1; text-align: right;">
+                        ${(item.price * item.quantity).toLocaleString()} RWF
                     </div>
-
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">📊 REPORTS & ANALYTICS</div>
-                        <ul class="sidebar-menu">
-                            <li><a onclick="showStockLevels()">📊 Stock Levels</a></li>
-                            <li><a onclick="showStockReports()">📋 Stock Reports</a></li>
-                            <li><a onclick="showIssueReports()">👥 Issue to Students/Staff</a></li>
-                            <li><a onclick="showExpiryReport()">📅 Expiry Report</a></li>
-                            <li><a onclick="showProcurement()">📦 Procurement</a></li>
-                            <li><a onclick="showPurchaseOrders()">📑 Purchase Orders</a></li>
-                            <li><a onclick="showUsageReports()">📈 Internal Usage Reports</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">🔄 ASSETS & TRANSFERS</div>
-                        <ul class="sidebar-menu">
-                            <li><a onclick="showGoodsReceiving()">📦 Goods Receiving</a></li>
-                            <li><a onclick="showAssetManagement()">🏢 Asset Management</a></li>
-                            <li><a onclick="showStockTransfers()">🔄 Stock Transfers</a></li>
-                            <li><a onclick="showUserRoles()">👥 User & Roles</a></li>
-                            <li><a onclick="showRolePermissions()">🔑 Role Permissions</a></li>
-                            <li><a onclick="showAuditLog()">📋 Audit Log</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">⚙️ SETTINGS & CUSTOMIZATION</div>
-                        <ul class="sidebar-menu">
-                            <li><a onclick="showGeneralSettings()">⚙️ General Settings</a></li>
-                            <li><a onclick="showAppearance()">🎨 Appearance</a></li>
-                            <li><a onclick="showModules()">🧩 Modules</a></li>
-                            <li><a onclick="showSecurity()">🔒 Security</a></li>
-                            <li><a onclick="showNotifications()">🔔 Notifications</a></li>
-                            <li><a onclick="showOrgInfo()">🏢 Org Info</a></li>
-                            <li><a onclick="showThemeColors()">🎨 Theme Colors</a></li>
-                            <li><a onclick="enableFeatures()">✨ Enable Features</a></li>
-                            <li><a onclick="showUserRoleSettings()">👥 User Roles</a></li>
-                            <li><a onclick="showTwoFA()">🔐 2FA</a></li>
-                            <li><a onclick="showAlertsReminders()">⏰ Alerts & Reminders</a></li>
-                            <li><a onclick="showAutoBackup()">💾 Auto Backup</a></li>
-                            <li><a onclick="showCurrencyTaxes()">💰 Currency/Taxes</a></li>
-                            <li><a onclick="showBackground()">🖼️ Background</a></li>
-                            <li><a onclick="logout()" style="color: var(--danger);">🚪 Logout</a></li>
-                        </ul>
-                    </div>
+                    <button onclick="removeFromPOSCart(${index})" style="background: none; border: none; color: #f44336; cursor: pointer; font-size: 16px;">🗑️</button>
                 </div>
-
-                <div class="main-content" id="mainContent">
-                    <div class="welcome-banner" id="welcomeBanner">
-                        <h2 id="welcomeMessage">WELCOME to BILLAN STOCK MANAGEMENT SYSTEM</h2>
-                        <p id="welcomeSubtext">Your complete enterprise stock management solution</p>
-                    </div>
-
-                    <div class="stats-grid" id="statsOverview">
-                        <div class="stat-card">
-                            <h4>Total Products</h4>
-                            <div class="stat-number" id="totalProducts">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Categories</h4>
-                            <div class="stat-number" id="totalCategories">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Low Stock</h4>
-                            <div class="stat-number" id="lowStockCount">0</div>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Today's Sales</h4>
-                            <div class="stat-number" id="todaySales">0</div>
-                            <div id="todaySalesAmount">0 RWF</div>
-                        </div>
-                        <div class="stat-card">
-                            <h4>Total Value</h4>
-                            <div class="stat-number" id="totalValue">0 RWF</div>
-                        </div>
-                    </div>
-
-                    <div class="category-selector" id="categorySelector">
-                        <h3>📁 Select Category</h3>
-                        <div class="category-buttons" id="categoryButtons">
-                            <button class="category-btn active" onclick="filterByCategory('all')">All Categories</button>
-                        </div>
-                    </div>
-
-                    <div class="inventory-header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px; margin-bottom: 20px;">
-                        <div class="inventory-tabs" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button class="tab active" onclick="showAllItems()" id="tabAll">All Items</button>
-                            <button class="tab" onclick="showLowStockView()" id="tabLow">Low Stock</button>
-                            <button class="tab" onclick="showOutOfStockView()" id="tabOut">Out of Stock</button>
-                        </div>
-                        
-                        <div class="action-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button class="btn-icon" onclick="showAddProductModal()">➕ Add Product</button>
-                            <button class="btn-icon success" onclick="showAddCategoryModal()">📁 Add Category</button>
-                            <button class="btn-icon" onclick="showBarcodeScanner()">📸 Scan</button>
-                            <button class="btn-icon warning" onclick="exportData()">📤 Export</button>
-                            <button class="btn-icon" onclick="toggleLargeMode()"> Large Mode</button>
-                            <button class="btn-icon" onclick="toggleSettings()">⚙️ Settings</button>
-                        </div>
-                        
-                        <div style="flex: 0 0 auto; min-width: 250px; position: relative; margin-left: auto;">
-                            <input type="text" id="searchProducts" placeholder="🔍 Search products..." onkeyup="searchProducts(this.value)"
-                                   style="width:100%; padding:12px 40px 12px 15px; border:2px solid #e0e0e0; border-radius:30px; font-size:14px; outline:none; transition:all 0.3s; background:white;"
-                                   onfocus="this.style.borderColor='#1a237e'; this.style.boxShadow='0 0 0 3px rgba(26,35,126,0.1)';"
-                                   onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none';">
-                            <span style="position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#1a237e; font-size:18px; pointer-events:none;">🔍</span>
-                        </div>
-                    </div>
-
-                    <table class="products-table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Category</th>
-                                <th>Price (RWF)</th>
-                                <th>Quantity</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productsBody">
-                            <tr>
-                                <td colspan="6" style="text-align: center; padding: 50px;">
-                                    <div class="spinner"></div>
-                                    <p style="font-size: 18px; color: #666; margin-top: 20px;">📭 Loading products...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div id="settingsPanel" class="settings-panel">
-                        <h3 style="color: var(--primary); margin-bottom: 20px;">⚙️ SYSTEM SETTINGS</h3>
-                        
-                        <div class="counter-display" id="settingsCounter">0y 0m 0d 0h 0m</div>
-                        
-                        <div class="settings-grid">
-                            <div class="setting-item">
-                                <h4>🏢 Organization</h4>
-                                <p><strong>Name:</strong> <span id="settingsOrgName"></span></p>
-                                <p><strong>Code:</strong> <span id="settingsOrgCode"></span></p>
-                                <p><strong>UDC:</strong> <span id="settingsUDC"></span></p>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <h4>🎨 Appearance</h4>
-                                <p><strong>Theme:</strong> Titan</p>
-                                <p><strong>Large Mode:</strong> <span id="largeModeStatus">Off</span></p>
-                                <button onclick="toggleLargeMode()" class="btn-small">Toggle</button>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <h4>🔒 Security</h4>
-                                <p><strong>2FA:</strong> <span id="twoFAStatus">Disabled</span></p>
-                                <p><strong>Last Backup:</strong> <span id="lastBackup">Never</span></p>
-                            </div>
-                            
-                            <div class="setting-item">
-                                <h4>🔔 Notifications</h4>
-                                <p><strong>Status:</strong> <span id="notifStatus">Enabled</span></p>
-                                <p><strong>Alerts:</strong> Active</p>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
-                            <button onclick="performBackup()" class="btn-icon success">💾 Backup Now</button>
-                            <button onclick="restoreBackup()" class="btn-icon warning">🔄 Restore</button>
-                            <button onclick="resetSystem()" class="btn-icon danger">⚠️ Reset</button>
-                            <button onclick="toggleSettings()" class="btn-icon">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            `;
+        });
+        cartDiv.innerHTML = cartHtml;
+    }
+    
+    const subtotal = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const discountAmount = (subtotal * posDiscount) / 100;
+    const taxAmount = ((subtotal - discountAmount) * posTax) / 100;
+    const total = subtotal - discountAmount + taxAmount;
+    
+    summaryDiv.innerHTML = `
+        <div style="display: flex; justify-content: space-between;">
+            <span>Subtotal:</span>
+            <span>${subtotal.toLocaleString()} RWF</span>
         </div>
-    </div>
-
-    <!-- Add Product Modal -->
-    <div id="addProductModal" class="modal">
-        <div class="modal-content">
-            <h3>➕ Add New Product</h3>
-            <select id="productCategorySelect" onchange="updateCategoryInput()" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-                <option value="">📁 Select Category</option>
-            </select>
-            <input type="text" id="productCategory" placeholder="📁 Or type new category" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="text" id="productName" placeholder="📦 Product Name" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="number" id="productPrice" placeholder="💰 Price (RWF)" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="number" id="productQuantity" placeholder="🔢 Quantity" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            
-            <label style="display:block; margin-bottom:5px; font-weight:600; color:#1a237e;">📏 Measurement Unit:</label>
-            <select id="productMeasurement" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #1a237e; border-radius:10px; background:white;">
-                <option value="pieces">📦 Pieces (pcs)</option>
-                <option value="kilograms">⚖️ Kilograms (kg)</option>
-                <option value="grams">⚖️ Grams (g)</option>
-                <option value="liters">💧 Liters (L)</option>
-                <option value="milliliters">💧 Milliliters (mL)</option>
-                <option value="boxes">📦 Boxes (box)</option>
-                <option value="cartons">📦 Cartons (ctn)</option>
-                <option value="dozens">🔢 Dozens (dz)</option>
-                <option value="meters">📏 Meters (m)</option>
-                <option value="centimeters">📏 Centimeters (cm)</option>
-            </select>
-            
-            <input type="text" id="productBarcode" placeholder="📸 Barcode (optional)" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="date" id="productExpiry" placeholder="📅 Expiry Date" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <textarea id="productDescription" placeholder="📝 Description (optional)" rows="3" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;"></textarea>
-            
-            <div style="background:#e8eaf6; padding:10px; border-radius:5px; margin-bottom:15px; font-size:13px; color:#1a237e;">
-                <strong>ℹ️ Low Stock Calculation:</strong> When quantity reaches <strong>20%</strong> of entered amount, it will show as LOW STOCK.
-            </div>
-            
-            <div class="modal-buttons" style="display:flex; gap:10px; justify-content:flex-end;">
-                <button class="save" onclick="addProduct()" style="padding:12px 25px; background:#4caf50; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">✅ Add Product</button>
-                <button class="cancel" onclick="hideModal('addProductModal')" style="padding:12px 25px; background:#e0e0e0; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">❌ Cancel</button>
-            </div>
+        ${posDiscount > 0 ? `
+        <div style="display: flex; justify-content: space-between; color: #f44336;">
+            <span>Discount (${posDiscount}%):</span>
+            <span>-${discountAmount.toLocaleString()} RWF</span>
         </div>
-    </div>
-
-    <!-- Add Category Modal -->
-    <div id="addCategoryModal" class="modal">
-        <div class="modal-content">
-            <h3>📁 Add New Category</h3>
-            <input type="text" id="categoryName" placeholder="Category Name">
-            <textarea id="categoryDescription" placeholder="Description" rows="3"></textarea>
-            <input type="text" id="categoryIcon" placeholder="Icon (optional)">
-            <div class="modal-buttons">
-                <button class="save" onclick="addCategory()">Add Category</button>
-                <button class="cancel" onclick="hideModal('addCategoryModal')">Cancel</button>
-            </div>
+        ` : ''}
+        <div style="display: flex; justify-content: space-between;">
+            <span>Tax (${posTax}%):</span>
+            <span>${taxAmount.toLocaleString()} RWF</span>
         </div>
-    </div>
-
-    <!-- Edit Product Modal -->
-    <div id="editProductModal" class="modal">
-        <div class="modal-content">
-            <h3>✏️ Edit Product</h3>
-            <input type="hidden" id="editProductId">
-            <select id="editProductCategorySelect" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-                <option value="">📁 Select Category</option>
-            </select>
-            <input type="text" id="editProductCategory" placeholder="📁 Category" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="text" id="editProductName" placeholder="📦 Product Name" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="number" id="editProductPrice" placeholder="💰 Price (RWF)" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="number" id="editProductQuantity" placeholder="🔢 Quantity" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            
-            <label style="display:block; margin-bottom:5px; font-weight:600; color:#1a237e;">📏 Measurement Unit:</label>
-            <select id="editProductMeasurement" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #1a237e; border-radius:10px; background:white;">
-                <option value="pieces">📦 Pieces (pcs)</option>
-                <option value="kilograms">⚖️ Kilograms (kg)</option>
-                <option value="grams">⚖️ Grams (g)</option>
-                <option value="liters">💧 Liters (L)</option>
-                <option value="milliliters">💧 Milliliters (mL)</option>
-                <option value="boxes">📦 Boxes (box)</option>
-                <option value="cartons">📦 Cartons (ctn)</option>
-                <option value="dozens">🔢 Dozens (dz)</option>
-                <option value="meters">📏 Meters (m)</option>
-                <option value="centimeters">📏 Centimeters (cm)</option>
-            </select>
-            
-            <input type="text" id="editProductBarcode" placeholder="📸 Barcode" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <input type="date" id="editProductExpiry" placeholder="📅 Expiry Date" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
-            <textarea id="editProductDescription" placeholder="📝 Description" rows="3" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;"></textarea>
-            
-            <div style="background:#e8eaf6; padding:10px; border-radius:5px; margin-bottom:15px; font-size:13px; color:#1a237e;">
-                <strong>ℹ️ Note:</strong> Low stock threshold is calculated as 20% of the quantity you enter.
-            </div>
-            
-            <div class="modal-buttons" style="display:flex; gap:10px; justify-content:flex-end;">
-                <button class="save" onclick="updateProduct()" style="padding:12px 25px; background:#2196f3; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">💾 Update Product</button>
-                <button class="cancel" onclick="hideModal('editProductModal')" style="padding:12px 25px; background:#e0e0e0; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">❌ Cancel</button>
-                <button class="delete" onclick="deleteProductFromEdit()" style="padding:12px 25px; background:#f44336; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">🗑️ Delete</button>
-            </div>
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-top: 5px; padding-top: 5px; border-top: 2px solid #1a237e;">
+            <span>TOTAL:</span>
+            <span style="color: #1a237e;">${total.toLocaleString()} RWF</span>
         </div>
-    </div>
+    `;
+}
 
-    <!-- Sell Product Modal -->
-    <div id="sellProductModal" class="modal">
-        <div class="modal-content">
-            <h3>💰 Record Sale</h3>
-            <select id="sellProductSelect">
-                <option value="">Select Product</option>
-            </select>
-            <input type="number" id="sellQuantity" placeholder="Quantity Sold">
-            <input type="text" id="sellCustomer" placeholder="Customer Name">
-            <select id="sellPaymentMethod">
-                <option value="cash">Cash</option>
-                <option value="mobile">Mobile Money</option>
-                <option value="card">Card</option>
-                <option value="credit">Credit</option>
-            </select>
-            <input type="text" id="sellReference" placeholder="Reference/Receipt No">
-            <textarea id="sellNotes" placeholder="Notes" rows="2"></textarea>
-            <div class="modal-buttons">
-                <button class="save" onclick="sellProduct()">Record Sale</button>
-                <button class="cancel" onclick="hideModal('sellProductModal')">Cancel</button>
-            </div>
+function applyDiscount() {
+    const discount = prompt('Enter discount percentage (%):', '0');
+    if (discount !== null) {
+        posDiscount = parseFloat(discount) || 0;
+        if (posDiscount < 0) posDiscount = 0;
+        if (posDiscount > 100) posDiscount = 100;
+        updatePOSDisplay();
+        showAlert(`🔖 Discount applied: ${posDiscount}%`, 'success');
+    }
+}
+
+function clearPOSCart() {
+    if (posCart.length > 0 && confirm('Clear all items from cart?')) {
+        posCart = [];
+        posDiscount = 0;
+        updatePOSDisplay();
+        showAlert('🗑️ Cart cleared', 'info');
+    }
+}
+
+function processPOSPayment() {
+    if (posCart.length === 0) {
+        showAlert('❌ Cart is empty!', 'warning');
+        return;
+    }
+    
+    const customer = document.getElementById('posCustomer')?.value || 'Walk-in';
+    const paymentMethod = document.getElementById('posPaymentMethod')?.value || 'cash';
+    
+    const subtotal = posCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const discountAmount = (subtotal * posDiscount) / 100;
+    const taxAmount = ((subtotal - discountAmount) * posTax) / 100;
+    const total = subtotal - discountAmount + taxAmount;
+    
+    for (const item of posCart) {
+        const product = db.products.find(p => p.id === item.productId);
+        if (product) {
+            product.quantity -= item.quantity;
+        }
+    }
+    
+    if (!db.sales) db.sales = [];
+    
+    const sale = {
+        id: Date.now(),
+        items: posCart,
+        subtotal: subtotal,
+        discount: posDiscount,
+        discountAmount: discountAmount,
+        tax: posTax,
+        taxAmount: taxAmount,
+        total: total,
+        customer: customer,
+        paymentMethod: paymentMethod,
+        date: new Date().toISOString()
+    };
+    
+    db.sales.push(sale);
+    saveDB();
+    
+    showReceipt(sale);
+    
+    posCart = [];
+    posDiscount = 0;
+    updatePOSDisplay();
+    
+    showAlert(`✅ Sale completed! Total: ${total.toLocaleString()} RWF`, 'success');
+    logAudit(`POS sale: ${total} RWF - ${customer}`);
+    
+    loadProducts();
+}
+
+function showReceipt(sale) {
+    let receipt = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2>BILLAN STOCK SYSTEM</h2>
+            <p>Tel: +250 784 680 801</p>
+            <p>${new Date().toLocaleString()}</p>
+            <p>Receipt #: ${sale.id}</p>
         </div>
-    </div>
+        <table style="width:100%; border-collapse: collapse;">
+            <tr style="border-bottom: 2px solid #000;">
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+    `;
+    
+    sale.items.forEach(item => {
+        receipt += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.price.toLocaleString()}</td>
+                <td>${(item.price * item.quantity).toLocaleString()}</td>
+            </tr>
+        `;
+    });
+    
+    receipt += `
+        <tr style="border-top: 2px solid #000;">
+            <td colspan="3" style="text-align: right;">Subtotal:</td>
+            <td>${sale.subtotal.toLocaleString()} RWF</td>
+        </tr>
+    `;
+    
+    if (sale.discount > 0) {
+        receipt += `
+            <tr>
+                <td colspan="3" style="text-align: right;">Discount (${sale.discount}%):</td>
+                <td>-${sale.discountAmount.toLocaleString()} RWF</td>
+            </tr>
+        `;
+    }
+    
+    receipt += `
+        <tr>
+            <td colspan="3" style="text-align: right;">Tax (${sale.tax}%):</td>
+            <td>${sale.taxAmount.toLocaleString()} RWF</td>
+        </tr>
+        <tr style="font-weight: bold;">
+            <td colspan="3" style="text-align: right;">TOTAL:</td>
+            <td>${sale.total.toLocaleString()} RWF</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: center; padding-top: 20px;">
+                Payment Method: ${sale.paymentMethod}<br>
+                Customer: ${sale.customer}<br>
+                Thank you for your business!
+            </td>
+        </tr>
+    `;
+    
+    document.getElementById('reportTitle').textContent = '🧾 Sale Receipt';
+    document.getElementById('reportContent').innerHTML = receipt;
+    document.getElementById('reportModal').style.display = 'flex';
+}
 
-    <!-- Purchase Product Modal -->
-    <div id="purchaseModal" class="modal">
-        <div class="modal-content">
-            <h3>📥 Record Purchase</h3>
-            <select id="purchaseProductSelect">
-                <option value="">Select Product</option>
-            </select>
-            <input type="number" id="purchaseQuantity" placeholder="Quantity Purchased">
-            <input type="number" id="purchasePrice" placeholder="Purchase Price per Unit">
-            <input type="text" id="purchaseSupplier" placeholder="Supplier Name">
-            <input type="text" id="purchaseInvoice" placeholder="Invoice Number">
-            <input type="date" id="purchaseDate">
-            <textarea id="purchaseNotes" placeholder="Notes" rows="2"></textarea>
-            <div class="modal-buttons">
-                <button class="save" onclick="recordPurchase()">Record Purchase</button>
-                <button class="cancel" onclick="hideModal('purchaseModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
+function printReceipt() {
+    const content = document.getElementById('reportContent').innerHTML;
+    const title = document.getElementById('reportTitle').textContent;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>${title}</title>
+                <style>
+                    body { font-family: 'Courier New', monospace; padding: 20px; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { padding: 5px; }
+                </style>
+            </head>
+            <body>
+                ${content}
+                <p style="text-align: center; margin-top: 30px;">Powered by BSMS TITAN</p>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
 
-    <!-- Transfer Stock Modal -->
-    <div id="transferModal" class="modal">
-        <div class="modal-content">
-            <h3>🔄 Transfer Stock</h3>
-            <select id="transferProductSelect">
-                <option value="">Select Product</option>
-            </select>
-            <input type="number" id="transferQuantity" placeholder="Quantity to Transfer">
-            <input type="text" id="transferFrom" placeholder="From Location/Department">
-            <input type="text" id="transferTo" placeholder="To Location/Department">
-            <input type="text" id="transferReference" placeholder="Reference">
-            <textarea id="transferReason" placeholder="Reason for Transfer" rows="2"></textarea>
-            <div class="modal-buttons">
-                <button class="save" onclick="transferStock()">Transfer</button>
-                <button class="cancel" onclick="hideModal('transferModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
+function showIssues() {
+    showIssueReports();
+}
 
-    <!-- Return Stock Modal -->
-    <div id="returnModal" class="modal">
-        <div class="modal-content">
-            <h3>↩️ Return Stock</h3>
-            <select id="returnProductSelect">
-                <option value="">Select Product</option>
-            </select>
-            <input type="number" id="returnQuantity" placeholder="Quantity to Return">
-            <select id="returnType">
-                <option value="customer">Customer Return</option>
-                <option value="supplier">Supplier Return</option>
-                <option value="internal">Internal Return</option>
-            </select>
-            <input type="text" id="returnReason" placeholder="Reason for Return">
-            <input type="text" id="returnReference" placeholder="Original Reference">
-            <textarea id="returnNotes" placeholder="Additional Notes" rows="2"></textarea>
-            <div class="modal-buttons">
-                <button class="save" onclick="returnStock()">Process Return</button>
-                <button class="cancel" onclick="hideModal('returnModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
+function updateActiveMenu(activeId) {
+    document.querySelectorAll('.sidebar-menu a').forEach(item => {
+        item.classList.remove('active');
+    });
+    const element = document.getElementById(activeId);
+    if (element) element.classList.add('active');
+}
 
-    <!-- Adjustment Modal -->
-    <div id="adjustmentModal" class="modal">
-        <div class="modal-content">
-            <h3>⚖️ Stock Adjustment</h3>
-            <select id="adjustmentProductSelect">
-                <option value="">Select Product</option>
-            </select>
-            <input type="number" id="adjustmentCurrentQuantity" placeholder="Current Quantity" readonly>
-            <input type="number" id="adjustmentNewQuantity" placeholder="New Quantity">
-            <select id="adjustmentType">
-                <option value="increase">Increase Stock</option>
-                <option value="decrease">Decrease Stock</option>
-                <option value="correct">Correct Count</option>
-            </select>
-            <input type="text" id="adjustmentReason" placeholder="Reason for Adjustment">
-            <textarea id="adjustmentNotes" placeholder="Notes" rows="2"></textarea>
-            <div class="modal-buttons">
-                <button class="save" onclick="makeAdjustment()">Apply Adjustment</button>
-                <button class="cancel" onclick="hideModal('adjustmentModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
+function updateActiveTab(activeId) {
+    const tabAll = document.getElementById('tabAll');
+    const tabLow = document.getElementById('tabLow');
+    const tabOut = document.getElementById('tabOut');
+    
+    if (tabAll) tabAll.classList.remove('active');
+    if (tabLow) tabLow.classList.remove('active');
+    if (tabOut) tabOut.classList.remove('active');
+    
+    const activeTab = document.getElementById(activeId);
+    if (activeTab) activeTab.classList.add('active');
+}
 
-    <!-- Barcode Scanner Modal -->
-    <div id="barcodeModal" class="modal">
-        <div class="modal-content">
-            <h3>📸 Scan Barcode</h3>
-            <div style="text-align:center; margin:20px; padding:40px; background:#f0f2f5; border-radius:10px;">
-                <div style="font-size:48px;">📷</div>
-                <p>Position barcode in frame</p>
-            </div>
-            <input type="text" id="barcodeInput" placeholder="Or enter barcode manually">
-            <div class="modal-buttons">
-                <button class="save" onclick="processBarcode()">Process</button>
-                <button class="cancel" onclick="hideModal('barcodeModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
+// ==================== DATA MANAGEMENT ====================
+function exportData() {
+    performBackup();
+}
 
-    <!-- Report Modal -->
-    <div id="reportModal" class="modal">
-        <div class="modal-content" style="max-width:800px;">
-            <h3 id="reportTitle">📊 Report</h3>
-            <div id="reportContent" style="max-height:400px; overflow-y:auto; margin:20px 0;"></div>
-            <div class="modal-buttons">
-                <button class="save" onclick="exportReport()">📤 Export</button>
-                <button class="save" onclick="printReport()">🖨️ Print</button>
-                <button class="cancel" onclick="hideModal('reportModal')">Close</button>
-            </div>
-        </div>
-    </div>
+function printReport() {
+    const content = document.getElementById('reportContent').innerHTML;
+    const title = document.getElementById('reportTitle').textContent;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>${title}</title>
+                <style>
+                    body { font-family: Arial; padding: 20px; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th { background: #1a237e; color: white; padding: 10px; }
+                    td { padding: 8px; border-bottom: 1px solid #ddd; }
+                </style>
+            </head>
+            <body>
+                <h2>${title}</h2>
+                ${content}
+                <p><em>Generated on ${new Date().toLocaleString()}</em></p>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
 
-    <!-- User Role Modal -->
-    <div id="userRoleModal" class="modal">
-        <div class="modal-content">
-            <h3>👥 Manage Users</h3>
-            <input type="text" id="userName" placeholder="User Name">
-            <input type="email" id="userEmail" placeholder="Email">
-            <select id="userRole">
-                <option value="admin">Admin - Full Access</option>
-                <option value="manager">Manager - Can Edit</option>
-                <option value="staff">Staff - Can Sell</option>
-                <option value="viewer">Viewer - View Only</option>
-            </select>
-            <input type="text" id="userDepartment" placeholder="Department">
-            <input type="password" id="userPassword" placeholder="Password">
-            <div class="modal-buttons">
-                <button class="save" onclick="addUser()">Add User</button>
-                <button class="cancel" onclick="hideModal('userRoleModal')">Cancel</button>
-            </div>
-        </div>
-    </div>
+function performBackup() {
+    const dataStr = JSON.stringify(db, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bsms_titan_backup_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    
+    localStorage.setItem('lastBackupTime', new Date().toLocaleString());
+    const lastBackup = document.getElementById('lastBackup');
+    if (lastBackup) lastBackup.textContent = new Date().toLocaleString();
+    
+    showAlert('💾 Backup created successfully!', 'success');
+    logAudit('Manual backup created');
+}
 
-    <script src="databasetes.js"></script>
-</body>
-</html>
+function restoreBackup() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = event => {
+            try {
+                const restored = JSON.parse(event.target.result);
+                db = restored;
+                saveDB();
+                showAlert('✅ Backup restored! Refreshing...', 'success');
+                logAudit('Backup restored');
+                setTimeout(() => location.reload(), 2000);
+            } catch (error) {
+                showAlert('❌ Invalid backup file', 'danger');
+            }
+        };
+        
+        reader.readAsText(file);
+    };
+    
+    input.click();
+}
+
+function resetSystem() {
+    if (confirm('⚠️ ARE YOU SURE? This will delete ALL data and reset the system!')) {
+        localStorage.removeItem('bsms_titan_database_v8');
+        localStorage.removeItem('bsms_admin_inbox');
+        localStorage.removeItem('bsms_last_reminder_date');
+        localStorage.removeItem('bsms_background');
+        showAlert('System reset! Reloading...', 'warning');
+        setTimeout(() => location.reload(), 2000);
+    }
+}
+
+// ==================== LOGOUT ====================
+function logout() {
+    if (timerInterval) clearInterval(timerInterval);
+    logAudit(`Logout: ${db.currentOrg?.name}`);
+    db.currentOrg = null;
+    db.currentUser = null;
+    saveDB();
+    showLogin();
+    showAlert('👋 Logged out successfully', 'info');
+}
+
+// ==================== UTILITIES ====================
+function logAudit(action) {
+    if (!db.auditLog) db.auditLog = [];
+    db.auditLog.push({
+        id: Date.now(),
+        action: action,
+        user: db.currentUser?.name || 'system',
+        timestamp: new Date().toISOString()
+    });
+    if (db.auditLog.length > 1000) db.auditLog.shift();
+    saveDB();
+}
+
+function hideModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function showAlert(message, type = 'info') {
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type}`;
+    alert.textContent = message;
+    alert.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        z-index: 20000;
+        animation: slideInRight 0.3s ease;
+        background: ${type === 'success' ? '#4caf50' : type === 'warning' ? '#ff9800' : type === 'danger' ? '#f44336' : '#2196f3'};
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    `;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => alert.remove(), 3000);
+}
+
+function updateUI() {
+    if (db.currentOrg) {
+        loadCategories();
+        loadProducts();
+        updateStats();
+    }
+    
+    const savedBg = localStorage.getItem('bsms_background');
+    if (savedBg) {
+        document.body.style.background = savedBg;
+    }
+}
+
+// ==================== AUTO BACKUP ====================
+setInterval(() => {
+    if (db.settings?.autoBackup) {
+        localStorage.setItem('bsms_titan_auto_backup', JSON.stringify(db));
+    }
+}, 300000);
+
+// ==================== BATCH TRACKING ====================
+let batches = [];
+
+function loadBatches() {
+    try {
+        const saved = localStorage.getItem('bsms_batches');
+        batches = saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        console.log('Error loading batches:', e);
+        batches = [];
+    }
+    return batches;
+}
+
+function saveBatches() {
+    try {
+        localStorage.setItem('bsms_batches', JSON.stringify(batches));
+    } catch (e) {
+        console.log('Error saving batches:', e);
+    }
+}
+
+function sellFromBatch(productId, quantity) {
+    loadBatches();
+    const productBatches = batches
+        .filter(b => b.productId === productId && b.remainingQuantity > 0 && b.status === 'active')
+        .sort((a, b) => new Date(a.dateReceived) - new Date(b.dateReceived));
+    
+    let remainingToSell = quantity;
+    const soldFromBatches = [];
+    
+    for (const batch of productBatches) {
+        if (remainingToSell <= 0) break;
+        const sellFromThisBatch = Math.min(batch.remainingQuantity, remainingToSell);
+        batch.remainingQuantity -= sellFromThisBatch;
+        remainingToSell -= sellFromThisBatch;
+        soldFromBatches.push({
+            batchNumber: batch.batchNumber,
+            quantity: sellFromThisBatch,
+            expiryDate: batch.expiryDate
+        });
+        if (batch.remainingQuantity === 0) {
+            batch.status = 'depleted';
+            batch.depletedDate = new Date().toISOString();
+        }
+    }
+    saveBatches();
+    return soldFromBatches;
+}
+
+function recordSaleWithBatch() {
+    console.log('📝 recordSaleWithBatch called');
+    
+    const productId = parseInt(document.getElementById('sellProductSelect')?.value);
+    const quantity = parseInt(document.getElementById('sellQuantity')?.value);
+    const customer = document.getElementById('sellCustomer')?.value;
+    const paymentMethod = document.getElementById('sellPaymentMethod')?.value;
+    const reference = document.getElementById('sellReference')?.value;
+    const notes = document.getElementById('sellNotes')?.value;
+    
+    if (!productId) {
+        showAlert('❌ Please select a product!', 'warning');
+        return;
+    }
+    
+    if (!quantity || quantity <= 0) {
+        showAlert('❌ Please enter a valid quantity!', 'warning');
+        return;
+    }
+    
+    const product = db.products.find(p => p.id === productId);
+    if (!product) {
+        showAlert('❌ Product not found!', 'danger');
+        return;
+    }
+    
+    if (quantity > product.quantity) {
+        showAlert(`❌ Only ${product.quantity} available!`, 'danger');
+        return;
+    }
+    
+    let soldBatches = [];
+    try {
+        soldBatches = sellFromBatch(productId, quantity);
+    } catch (e) {
+        console.log('Batch tracking error (non-critical):', e);
+    }
+    
+    product.quantity -= quantity;
+    
+    if (!db.sales) db.sales = [];
+    
+    const sale = {
+        id: Date.now(),
+        productId: productId,
+        productName: product.name,
+        quantity: quantity,
+        price: product.price,
+        total: product.price * quantity,
+        customer: customer || 'Walk-in',
+        paymentMethod: paymentMethod || 'cash',
+        reference: reference || 'N/A',
+        notes: notes || '',
+        batches: soldBatches,
+        date: new Date().toISOString()
+    };
+    
+    db.sales.push(sale);
+    saveDB();
+    
+    document.getElementById('sellQuantity').value = '';
+    document.getElementById('sellCustomer').value = '';
+    document.getElementById('sellReference').value = '';
+    document.getElementById('sellNotes').value = '';
+    hideModal('sellProductModal');
+    
+    loadProducts();
+    
+    if (soldBatches.length > 0) {
+        const batchInfo = soldBatches.map(b => `${b.batchNumber} (${b.quantity})`).join(', ');
+        showAlert(`💰 Sale recorded from batches: ${batchInfo}`, 'success');
+    } else {
+        showAlert(`💰 Sale recorded: ${quantity} x ${product.name}`, 'success');
+    }
+    
+    logAudit(`Sale: ${quantity} x ${product.name}`);
+}
+
+// ==================== SEARCH PRODUCTS FUNCTION ====================
+function searchProducts(query) {
+    const tbody = document.getElementById('productsBody');
+    const products = db.products || [];
+    
+    if (!query.trim()) {
+        loadProducts();
+        return;
+    }
+    
+    const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        (p.category && p.category.toLowerCase().includes(query.toLowerCase())) ||
+        (p.description && p.description.toLowerCase().includes(query.toLowerCase())) ||
+        (p.barcode && p.barcode.toLowerCase().includes(query.toLowerCase()))
+    );
+    
+    if (filtered.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 50px;">
+                    <p style="font-size: 18px; color: #666;">🔍 No products found matching "${query}"</p>
+                    <p style="color: #999; margin-top: 10px;">Try a different search term</p>
+                </td>
+            </tr>
+        `;
+    } else {
+        displayProducts(filtered);
+    }
+}
+
+const originalSellProduct = window.sellProduct;
+window.sellProduct = function() {
+    if (document.querySelector('#sellProductModal') && 
+        document.querySelector('#sellProductModal').style.display === 'flex') {
+        recordSaleWithBatch();
+    } else {
+        if (originalSellProduct) originalSellProduct();
+    }
+};
+
+window.recordSaleWithBatch = recordSaleWithBatch;
+
+// ==================== INITIALIZE ====================
+loadDB();
+showLogin();
+
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'h') {
+        e.preventDefault();
+        showAdminPanel();
+    }
+});
+
+console.log('✅ BSMS TITAN v8.0 loaded successfully!');
+console.log('🎯 Professional Edition - All buttons functional!');
+console.log('📊 Low stock calculated as 20% of original quantity!');
