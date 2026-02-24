@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billan Stock Management System</title>
+    <!-- Font Awesome for eye icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -40,36 +42,70 @@
             margin: 0 auto;
         }
 
-        /* ==================== BILLAN TITAN LOGO ==================== */
-        .billan-header {
-            text-align: center;
-            margin-bottom: 30px;
-            animation: slideDown 0.8s ease;
+        /* ==================== TOP BAR WITH TWO LOGOS ==================== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        /* LEFT LOGO - YOUR CIRCULAR LOGO */
+        .billan-logo-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ffd700;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: slideInLogo 0.6s ease;
+            background: white;
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
+        .billan-logo-image:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 30px rgba(26,35,126,0.4);
+            border-color: #1a237e;
+        }
+
+        @keyframes slideInLogo {
+            from {
+                opacity: 0;
+                transform: translateX(-50px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        /* CENTER LOGO - YOUR BIG BILLAN LOGO (UNTOUCHED) */
+        .billan-header {
+            text-align: center;
+            margin: 0;
+            flex: 1;
         }
 
         .logo-titan {
             display: inline-block;
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 25px 80px;
+            padding: 20px 60px;
             border-radius: 80px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border: 4px solid var(--accent);
             position: relative;
-            background: linear-gradient(135deg, #fff, #f0f0f0);
         }
 
         .logo-titan::before {
             content: '⬢';
             position: absolute;
-            left: 25px;
+            left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 40px;
+            font-size: 30px;
             color: var(--primary);
             opacity: 0.3;
         }
@@ -77,16 +113,16 @@
         .logo-titan::after {
             content: '⬢';
             position: absolute;
-            right: 25px;
+            right: 20px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 40px;
+            font-size: 30px;
             color: var(--primary);
             opacity: 0.3;
         }
 
         .logo-titan h1 {
-            font-size: 64px;
+            font-size: 48px;
             font-weight: 900;
             background: linear-gradient(135deg, var(--primary), var(--secondary), #6a1b9a);
             -webkit-background-clip: text;
@@ -96,20 +132,26 @@
         }
 
         .logo-titan p {
-            font-size: 18px;
+            font-size: 14px;
             color: var(--primary);
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             font-weight: 700;
             text-transform: uppercase;
         }
 
         .tagline-titan {
             color: #fff;
-            margin-top: 15px;
-            font-size: 16px;
+            margin-top: 10px;
+            font-size: 14px;
             opacity: 0.95;
             letter-spacing: 3px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* RIGHT SPACER */
+        .right-spacer {
+            width: 100px;
+            height: 100px;
+            opacity: 0;
         }
 
         /* ==================== LOGIN PAGE ==================== */
@@ -195,13 +237,6 @@
             border-radius: 10px;
         }
 
-        .button-group {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 10px;
-            margin: 30px 0;
-        }
-
         .btn-primary {
             padding: 15px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -236,12 +271,12 @@
             border-top: 1px solid #eee;
         }
 
-        /* ==================== ABOUT PAGE ==================== */
+        /* ==================== ABOUT PAGE STYLES ==================== */
         .about-page {
             background: white;
             border-radius: 40px;
             padding: 50px;
-            box-shadow: var(--shadow-hover);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
             max-width: 1200px;
             margin: 0 auto;
             display: none;
@@ -309,11 +344,11 @@
             padding: 30px;
             background: linear-gradient(135deg, #f5f5f5, #ffffff);
             border-radius: 20px;
-            border: 2px dashed var(--danger);
+            border: 2px dashed #c62828;
         }
 
         .btn-aoa {
-            background: linear-gradient(135deg, var(--danger), #8e0000);
+            background: linear-gradient(135deg, #c62828, #8e0000);
             color: white;
             border: none;
             padding: 20px 50px;
@@ -331,7 +366,7 @@
             box-shadow: 0 15px 30px rgba(198,40,40,0.5);
         }
 
-        /* ==================== DASHBOARD ==================== */
+        /* ==================== DASHBOARD STYLES ==================== */
         .dashboard {
             display: none;
             animation: fadeIn 0.5s ease;
@@ -496,7 +531,6 @@
             font-weight: bold;
         }
 
-        /* Category Selection */
         .category-selector {
             background: #f0f2f5;
             padding: 20px;
@@ -693,7 +727,6 @@
             color: white;
         }
 
-        /* Settings Panel */
         .settings-panel {
             background: white;
             border-radius: 20px;
@@ -856,21 +889,21 @@
             font-family: monospace;
         }
 
-        /* largebutton Mode */
-        .largebutton-mode {
+        /* Large Mode */
+        .large-mode {
             font-size: 18px;
         }
 
-        .largebutton-mode button {
+        .large-mode button {
             padding: 15px 25px !important;
             font-size: 16px !important;
         }
 
-        .largebutton-mode .stat-number {
+        .large-mode .stat-number {
             font-size: 40px !important;
         }
 
-        .large-mode input, .largebutton-mode select {
+        .large-mode input, .large-mode select {
             padding: 15px !important;
             font-size: 16px !important;
         }
@@ -905,7 +938,6 @@
             }
         }
 
-        /* Loading Spinner */
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid var(--primary);
@@ -923,6 +955,15 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .right-spacer {
+                display: none;
+            }
+            
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
@@ -944,11 +985,31 @@
                 display: none;
             }
         }
+
+        #searchProducts {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        #searchProducts:focus {
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- BILLAN TITAN Logo -->
+    <!-- TOP BAR WITH TWO LOGOS -->
+    <div class="top-bar">
+        <!-- LEFT LOGO - YOUR CIRCULAR LOGO -->
+        <img src="billanlogo.png" alt="BILLAN Software Development Company" class="billan-logo-image" onclick="showLogin()" title="Go to Login">
+        
+        <!-- CENTER LOGO - YOUR BIG BILLAN LOGO (UNTOUCHED) -->
         <div class="billan-header">
             <div class="logo-titan">
                 <h1>BILLAN</h1>
@@ -956,7 +1017,12 @@
             </div>
             <div class="tagline-titan">⚡ All-in-One Stock & Resource Management System ⚡</div>
         </div>
+        
+        <!-- RIGHT SPACER (keeps everything balanced) -->
+        <div class="right-spacer"></div>
+    </div>
 
+    <div class="container">
         <!-- ==================== LOGIN PAGE ==================== -->
         <div id="loginPage" class="login-page">
             <div class="system-badges">
@@ -987,14 +1053,14 @@
                 <span>Secure Access • 2FA Ready • End-to-End Encrypted</span>
             </div>
 
-            <div class="button-group">
-                <button class="btn-primary" onclick="login()">LOGIN</button>
-                <button class="btn-primary btn-success" onclick="showRegister()">REGISTER</button>
-                <button class="btn-primary btn-warning" onclick="showAbout()">ABOUT</button>
+            <div style="display: flex; gap: 10px; margin: 30px 0;">
+                <button onclick="login()" style="flex: 2; padding: 15px; background: #1a237e; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">LOGIN</button>
+                <button onclick="showRegister()" style="flex: 1; padding: 15px; background: #4caf50; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">REGISTER</button>
+                <button onclick="showAbout()" style="flex: 1; padding: 15px; background: #ff9800; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">ABOUT</button>
             </div>
-
+            
             <div class="powered-by">
-                POWERED BY BILLAN SOFTWARE TECH | ©2026 | BSMS
+                POWERED BY BILLAN SOFTWARE TECH | ©2026 | BSMS 
             </div>
         </div>
 
@@ -1043,17 +1109,17 @@
                 <input type="text" id="regLocation" placeholder="Enter district/city">
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 30px;">
-                <button class="btn-primary btn-success" onclick="register()" style="flex: 2;">REGISTER</button>
-                <button class="btn-primary" onclick="showLogin()" style="flex: 1;">BACK</button>
+            <div style="display: flex; gap: 10px; margin-top: 30px; flex-wrap: nowrap;">
+                <button onclick="register()" style="flex: 2; padding: 15px; background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer;">REGISTER</button>
+                <button onclick="showLogin()" style="flex: 1; padding: 15px; background: linear-gradient(135deg, #666, #444); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer;">BACK</button>
             </div>
         </div>
 
         <!-- ==================== ABOUT PAGE ==================== -->
-        <div id="aboutPage" class="about-page">
+        <div id="aboutPage" class="about-page" style="display: none;">
             <div class="about-header">
                 <h1>📋 BILLAN TITAN ENGINEERING</h1>
-                <p class="motto">"We think about society problems and solve them through today's world technology"</p>
+                <p class="motto">"We think about society problems and solve them through technology"</p>
             </div>
 
             <div class="system-architecture">
@@ -1139,7 +1205,7 @@
                 <div class="contact-card">
                     <h3>📱 PHONE</h3>
                     <p>+250 784 680 801</p>
-                    <p>+250 795 459 250</p>
+                    <p>+250 788 816 424</p>
                 </div>
                 <div class="contact-card">
                     <h3>📍 LOCATION</h3>
@@ -1150,7 +1216,7 @@
 
             <div class="aoa-container">
                 <button class="btn-aoa" onclick="showAdminPanel()">👑 AOA (ADMIN ONLY ACCESS)</button>
-                <p style="margin-top: 15px; color: #666;"> ! For administrators only</p>
+                <p style="margin-top: 15px; color: #666;">• For administrators only</p>
             </div>
 
             <button onclick="showLogin()" style="width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px;">← BACK TO LOGIN</button>
@@ -1195,7 +1261,6 @@
 
         <!-- ==================== MAIN DASHBOARD ==================== -->
         <div id="dashboard" class="dashboard">
-            <!-- Top Navigation -->
             <div class="top-nav">
                 <div class="org-info">
                     <h2 id="dashboardOrgName">Loading...</h2>
@@ -1207,11 +1272,8 @@
                 </div>
             </div>
 
-            <!-- Dashboard Grid -->
             <div class="dashboard-grid">
-                <!-- Left Sidebar Navigation -->
                 <div class="sidebar" id="mainSidebar">
-                    <!-- Smart Dashboard -->
                     <div class="sidebar-section">
                         <div class="sidebar-title">📊 SMART DASHBOARD</div>
                         <ul class="sidebar-menu">
@@ -1221,7 +1283,6 @@
                         </ul>
                     </div>
 
-                    <!-- Inventory Management -->
                     <div class="sidebar-section">
                         <div class="sidebar-title">📦 INVENTORY MANAGEMENT</div>
                         <ul class="sidebar-menu">
@@ -1235,7 +1296,6 @@
                         </ul>
                     </div>
 
-                    <!-- Transaction Processing -->
                     <div class="sidebar-section">
                         <div class="sidebar-title">💰 TRANSACTION PROCESSING</div>
                         <ul class="sidebar-menu">
@@ -1249,7 +1309,6 @@
                         </ul>
                     </div>
 
-                    <!-- Reports & Analytics -->
                     <div class="sidebar-section">
                         <div class="sidebar-title">📊 REPORTS & ANALYTICS</div>
                         <ul class="sidebar-menu">
@@ -1263,7 +1322,6 @@
                         </ul>
                     </div>
 
-                    <!-- Assets & Transfers -->
                     <div class="sidebar-section">
                         <div class="sidebar-title">🔄 ASSETS & TRANSFERS</div>
                         <ul class="sidebar-menu">
@@ -1276,7 +1334,6 @@
                         </ul>
                     </div>
 
-                    <!-- Settings & Customization -->
                     <div class="sidebar-section">
                         <div class="sidebar-title">⚙️ SETTINGS & CUSTOMIZATION</div>
                         <ul class="sidebar-menu">
@@ -1299,15 +1356,12 @@
                     </div>
                 </div>
 
-                <!-- Main Content Area -->
                 <div class="main-content" id="mainContent">
-                    <!-- Welcome Banner -->
                     <div class="welcome-banner" id="welcomeBanner">
-                        <h2 id="welcomeMessage"> WELCOME to BILLAN STOCK MANAGEMENT SYSTEM</h2>
+                        <h2 id="welcomeMessage">WELCOME to BILLAN STOCK MANAGEMENT SYSTEM</h2>
                         <p id="welcomeSubtext">Your complete enterprise stock management solution</p>
                     </div>
 
-                    <!-- Stats Overview -->
                     <div class="stats-grid" id="statsOverview">
                         <div class="stat-card">
                             <h4>Total Products</h4>
@@ -1332,34 +1386,38 @@
                         </div>
                     </div>
 
-                    <!-- Category Selector (New Feature) -->
                     <div class="category-selector" id="categorySelector">
                         <h3>📁 Select Category</h3>
                         <div class="category-buttons" id="categoryButtons">
                             <button class="category-btn active" onclick="filterByCategory('all')">All Categories</button>
-                            <!-- Categories will be added here dynamically -->
                         </div>
                     </div>
 
-                    <!-- Inventory Header -->
-                    <div class="inventory-header">
-                        <div class="inventory-tabs">
+                    <div class="inventory-header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <div class="inventory-tabs" style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <button class="tab active" onclick="showAllItems()" id="tabAll">All Items</button>
                             <button class="tab" onclick="showLowStockView()" id="tabLow">Low Stock</button>
                             <button class="tab" onclick="showOutOfStockView()" id="tabOut">Out of Stock</button>
                         </div>
-                        <div class="action-buttons">
+                        
+                        <div class="action-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <button class="btn-icon" onclick="showAddProductModal()">➕ Add Product</button>
                             <button class="btn-icon success" onclick="showAddCategoryModal()">📁 Add Category</button>
                             <button class="btn-icon" onclick="showBarcodeScanner()">📸 Scan</button>
                             <button class="btn-icon warning" onclick="exportData()">📤 Export</button>
-                            <button class="btn-icon info" onclick="printReport()">🖨️ Print</button>
-                            <button class="btn-icon" onclick="togglelargebuttonmode()">large button Mode</button>
+                            <button class="btn-icon" onclick="toggleLargeMode()"> Large Mode</button>
                             <button class="btn-icon" onclick="toggleSettings()">⚙️ Settings</button>
+                        </div>
+                        
+                        <div style="flex: 0 0 auto; min-width: 250px; position: relative; margin-left: auto;">
+                            <input type="text" id="searchProducts" placeholder="🔍 Search products..." onkeyup="searchProducts(this.value)"
+                                   style="width:100%; padding:12px 40px 12px 15px; border:2px solid #e0e0e0; border-radius:30px; font-size:14px; outline:none; transition:all 0.3s; background:white;"
+                                   onfocus="this.style.borderColor='#1a237e'; this.style.boxShadow='0 0 0 3px rgba(26,35,126,0.1)';"
+                                   onblur="this.style.borderColor='#e0e0e0'; this.style.boxShadow='none';">
+                            <span style="position:absolute; right:15px; top:50%; transform:translateY(-50%); color:#1a237e; font-size:18px; pointer-events:none;">🔍</span>
                         </div>
                     </div>
 
-                    <!-- Products Table -->
                     <table class="products-table">
                         <thead>
                             <tr>
@@ -1381,7 +1439,6 @@
                         </tbody>
                     </table>
 
-                    <!-- Settings Panel -->
                     <div id="settingsPanel" class="settings-panel">
                         <h3 style="color: var(--primary); margin-bottom: 20px;">⚙️ SYSTEM SETTINGS</h3>
                         
@@ -1398,8 +1455,8 @@
                             <div class="setting-item">
                                 <h4>🎨 Appearance</h4>
                                 <p><strong>Theme:</strong> Titan</p>
-                                <p><strong>large button mode</strong> <span id="large button modeStatus">Off</span></p>
-                                <button onclick="togglelargebuttonmode()" class="btn-small">Toggle</button>
+                                <p><strong>Large Mode:</strong> <span id="largeModeStatus">Off</span></p>
+                                <button onclick="toggleLargeMode()" class="btn-small">Toggle</button>
                             </div>
                             
                             <div class="setting-item">
@@ -1427,114 +1484,47 @@
         </div>
     </div>
 
-    <!-- ==================== ALL MODALS ==================== -->
     <!-- Add Product Modal -->
-<div id="addProductModal" class="modal">
-    <div class="modal-content">
-        <h3>➕ Add New Product</h3>
-        
-        <!-- Category Selection -->
-        <select id="productCategorySelect" onchange="updateCategoryInput()" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-            <option value="">📁 Select Category</option>
-        </select>
-        <input type="text" id="productCategory" placeholder="📁 Or type new category" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        
-        <!-- Product Details -->
-        <input type="text" id="productName" placeholder="📦 Product Name" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        <input type="number" id="productPrice" placeholder="💰 Price (RWF)" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        
-        <!-- QUANTITY FIELD - The system will use this to calculate 20% low stock threshold -->
-        <input type="number" id="productQuantity" placeholder="🔢 Quantity" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        
-        <!-- ===== NEW: MEASUREMENT UNIT DROPDOWN ===== -->
-        <!-- This lets users choose pieces, kg, liters, etc. -->
-        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #1a237e;">📏 Measurement Unit:</label>
-        <select id="productMeasurement" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #1a237e; border-radius: 10px; background: white;">
-            <option value="pieces">📦 Pieces (pcs) - Individual items</option>
-            <option value="kilograms">⚖️ Kilograms (kg) - Weight</option>
-            <option value="grams">⚖️ Grams (g) - Small weight</option>
-            <option value="liters">💧 Liters (L) - Liquids</option>
-            <option value="milliliters">💧 Milliliters (mL) - Small liquids</option>
-            <option value="boxes">📦 Boxes (box) - Boxed items</option>
-            <option value="cartons">📦 Cartons (ctn) - Bulk packages</option>
-            <option value="dozens">🔢 Dozens (dz) - Sets of 12</option>
-            <option value="meters">📏 Meters (m) - Length</option>
-            <option value="centimeters">📏 Centimeters (cm) - Small length</option>
-        </select>
-        <!-- ===== END OF MEASUREMENT UNIT DROPDOWN ===== -->
-        
-        <!-- Optional Fields -->
-        <input type="text" id="productBarcode" placeholder="📸 Barcode (optional)" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        <input type="date" id="productExpiry" placeholder="📅 Expiry Date" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        <textarea id="productDescription" placeholder="📝 Description (optional)" rows="3" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;"></textarea>
-        
-        <!-- Helper text showing how low stock is calculated -->
-        <div style="background: #e8eaf6; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #1a237e;">
-            <strong>ℹ️ Low Stock Calculation:</strong> When quantity reaches <strong>20%</strong> of entered amount, it will show as LOW STOCK.
-            <br>Example: If you enter 100, low stock alert at 20.
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="modal-buttons" style="display: flex; gap: 10px; justify-content: flex-end;">
-            <button class="save" onclick="addProduct()" style="padding: 12px 25px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">✅ Add Product</button>
-            <button class="cancel" onclick="hideModal('addProductModal')" style="padding: 12px 25px; background: #e0e0e0; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">❌ Cancel</button>
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <h3>➕ Add New Product</h3>
+            <select id="productCategorySelect" onchange="updateCategoryInput()" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+                <option value="">📁 Select Category</option>
+            </select>
+            <input type="text" id="productCategory" placeholder="📁 Or type new category" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="text" id="productName" placeholder="📦 Product Name" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="number" id="productPrice" placeholder="💰 Price (RWF)" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="number" id="productQuantity" placeholder="🔢 Quantity" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            
+            <label style="display:block; margin-bottom:5px; font-weight:600; color:#1a237e;">📏 Measurement Unit:</label>
+            <select id="productMeasurement" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #1a237e; border-radius:10px; background:white;">
+                <option value="pieces">📦 Pieces (pcs)</option>
+                <option value="kilograms">⚖️ Kilograms (kg)</option>
+                <option value="grams">⚖️ Grams (g)</option>
+                <option value="liters">💧 Liters (L)</option>
+                <option value="milliliters">💧 Milliliters (mL)</option>
+                <option value="boxes">📦 Boxes (box)</option>
+                <option value="cartons">📦 Cartons (ctn)</option>
+                <option value="dozens">🔢 Dozens (dz)</option>
+                <option value="meters">📏 Meters (m)</option>
+                <option value="centimeters">📏 Centimeters (cm)</option>
+            </select>
+            
+            <input type="text" id="productBarcode" placeholder="📸 Barcode (optional)" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="date" id="productExpiry" placeholder="📅 Expiry Date" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <textarea id="productDescription" placeholder="📝 Description (optional)" rows="3" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;"></textarea>
+            
+            <div style="background:#e8eaf6; padding:10px; border-radius:5px; margin-bottom:15px; font-size:13px; color:#1a237e;">
+                <strong>ℹ️ Low Stock Calculation:</strong> When quantity reaches <strong>20%</strong> of entered amount, it will show as LOW STOCK.
+            </div>
+            
+            <div class="modal-buttons" style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="save" onclick="addProduct()" style="padding:12px 25px; background:#4caf50; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">✅ Add Product</button>
+                <button class="cancel" onclick="hideModal('addProductModal')" style="padding:12px 25px; background:#e0e0e0; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">❌ Cancel</button>
+            </div>
         </div>
     </div>
-</div>
-    <!-- Edit Product Modal -->
-<div id="editProductModal" class="modal">
-    <div class="modal-content">
-        <h3>✏️ Edit Product</h3>
-        
-        <input type="hidden" id="editProductId">
-        
-        <!-- Category Selection -->
-        <select id="editProductCategorySelect" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-            <option value="">📁 Select Category</option>
-        </select>
-        <input type="text" id="editProductCategory" placeholder="📁 Category" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        
-        <!-- Product Details -->
-        <input type="text" id="editProductName" placeholder="📦 Product Name" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        <input type="number" id="editProductPrice" placeholder="💰 Price (RWF)" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        
-        <!-- Quantity Field -->
-        <input type="number" id="editProductQuantity" placeholder="🔢 Quantity" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        
-        <!-- ===== NEW: MEASUREMENT UNIT DROPDOWN FOR EDIT ===== -->
-        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #1a237e;">📏 Measurement Unit:</label>
-        <select id="editProductMeasurement" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #1a237e; border-radius: 10px; background: white;">
-            <option value="pieces">📦 Pieces (pcs) - Individual items</option>
-            <option value="kilograms">⚖️ Kilograms (kg) - Weight</option>
-            <option value="grams">⚖️ Grams (g) - Small weight</option>
-            <option value="liters">💧 Liters (L) - Liquids</option>
-            <option value="milliliters">💧 Milliliters (mL) - Small liquids</option>
-            <option value="boxes">📦 Boxes (box) - Boxed items</option>
-            <option value="cartons">📦 Cartons (ctn) - Bulk packages</option>
-            <option value="dozens">🔢 Dozens (dz) - Sets of 12</option>
-            <option value="meters">📏 Meters (m) - Length</option>
-            <option value="centimeters">📏 Centimeters (cm) - Small length</option>
-        </select>
-        <!-- ===== END OF MEASUREMENT UNIT DROPDOWN ===== -->
-        
-        <!-- Optional Fields -->
-        <input type="text" id="editProductBarcode" placeholder="📸 Barcode" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        <input type="date" id="editProductExpiry" placeholder="📅 Expiry Date" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;">
-        <textarea id="editProductDescription" placeholder="📝 Description" rows="3" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 10px;"></textarea>
-        
-        <!-- Helper text -->
-        <div style="background: #e8eaf6; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; color: #1a237e;">
-            <strong>ℹ️ Note:</strong> Low stock threshold is calculated as 20% of the quantity you enter.
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="modal-buttons" style="display: flex; gap: 10px; justify-content: flex-end;">
-            <button class="save" onclick="updateProduct()" style="padding: 12px 25px; background: #2196f3; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">💾 Update Product</button>
-            <button class="cancel" onclick="hideModal('editProductModal')" style="padding: 12px 25px; background: #e0e0e0; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">❌ Cancel</button>
-            <button class="delete" onclick="deleteProductFromEdit()" style="padding: 12px 25px; background: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">🗑️ Delete</button>
-        </div>
-    </div>
-</div>
+
     <!-- Add Category Modal -->
     <div id="addCategoryModal" class="modal">
         <div class="modal-content">
@@ -1554,20 +1544,40 @@
         <div class="modal-content">
             <h3>✏️ Edit Product</h3>
             <input type="hidden" id="editProductId">
-            <select id="editProductCategorySelect">
-                <option value="">Select Category</option>
+            <select id="editProductCategorySelect" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+                <option value="">📁 Select Category</option>
             </select>
-            <input type="text" id="editProductCategory" placeholder="Category">
-            <input type="text" id="editProductName" placeholder="Product Name">
-            <input type="text" id="editProductPrice" placeholder="Price (RWF)">
-            <input type="text" id="editProductQuantity" placeholder="Quantity">
-            <input type="text" id="editProductBarcode" placeholder="Barcode">
-            <input type="date" id="editProductExpiry" placeholder="Expiry Date">
-            <textarea id="editProductDescription" placeholder="Description" rows="3"></textarea>
-            <div class="modal-buttons">
-                <button class="save" onclick="updateProduct()">Update</button>
-                <button class="cancel" onclick="hideModal('editProductModal')">Cancel</button>
-                <button class="delete" onclick="deleteProductFromEdit()">Delete</button>
+            <input type="text" id="editProductCategory" placeholder="📁 Category" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="text" id="editProductName" placeholder="📦 Product Name" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="number" id="editProductPrice" placeholder="💰 Price (RWF)" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="number" id="editProductQuantity" placeholder="🔢 Quantity" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            
+            <label style="display:block; margin-bottom:5px; font-weight:600; color:#1a237e;">📏 Measurement Unit:</label>
+            <select id="editProductMeasurement" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #1a237e; border-radius:10px; background:white;">
+                <option value="pieces">📦 Pieces (pcs)</option>
+                <option value="kilograms">⚖️ Kilograms (kg)</option>
+                <option value="grams">⚖️ Grams (g)</option>
+                <option value="liters">💧 Liters (L)</option>
+                <option value="milliliters">💧 Milliliters (mL)</option>
+                <option value="boxes">📦 Boxes (box)</option>
+                <option value="cartons">📦 Cartons (ctn)</option>
+                <option value="dozens">🔢 Dozens (dz)</option>
+                <option value="meters">📏 Meters (m)</option>
+                <option value="centimeters">📏 Centimeters (cm)</option>
+            </select>
+            
+            <input type="text" id="editProductBarcode" placeholder="📸 Barcode" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <input type="date" id="editProductExpiry" placeholder="📅 Expiry Date" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;">
+            <textarea id="editProductDescription" placeholder="📝 Description" rows="3" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px;"></textarea>
+            
+            <div style="background:#e8eaf6; padding:10px; border-radius:5px; margin-bottom:15px; font-size:13px; color:#1a237e;">
+                <strong>ℹ️ Note:</strong> Low stock threshold is calculated as 20% of the quantity you enter.
+            </div>
+            
+            <div class="modal-buttons" style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="save" onclick="updateProduct()" style="padding:12px 25px; background:#2196f3; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">💾 Update Product</button>
+                <button class="cancel" onclick="hideModal('editProductModal')" style="padding:12px 25px; background:#e0e0e0; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">❌ Cancel</button>
+                <button class="delete" onclick="deleteProductFromEdit()" style="padding:12px 25px; background:#f44336; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">🗑️ Delete</button>
             </div>
         </div>
     </div>
@@ -1590,7 +1600,7 @@
             <input type="text" id="sellReference" placeholder="Reference/Receipt No">
             <textarea id="sellNotes" placeholder="Notes" rows="2"></textarea>
             <div class="modal-buttons">
-                <button class="save" onclick="recordSaleWithBatch()">Record Sale with Batch</button>
+                <button class="save" onclick="sellProduct()">Record Sale</button>
                 <button class="cancel" onclick="hideModal('sellProductModal')">Cancel</button>
             </div>
         </div>
@@ -1603,14 +1613,14 @@
             <select id="purchaseProductSelect">
                 <option value="">Select Product</option>
             </select>
-            <input type="text" id="purchaseQuantity" placeholder="Quantity Purchased">
-            <input type="text" id="purchasePrice" placeholder="Purchase Price per Unit">
+            <input type="number" id="purchaseQuantity" placeholder="Quantity Purchased">
+            <input type="number" id="purchasePrice" placeholder="Purchase Price per Unit">
             <input type="text" id="purchaseSupplier" placeholder="Supplier Name">
             <input type="text" id="purchaseInvoice" placeholder="Invoice Number">
-            <input type="date" id="purchaseDate" value="<?php echo date('Y-m-d'); ?>">
+            <input type="date" id="purchaseDate">
             <textarea id="purchaseNotes" placeholder="Notes" rows="2"></textarea>
             <div class="modal-buttons">
-                <button class="save" onclick="recordPurchaseWithBatch()">Record Purchase with Batch</button>
+                <button class="save" onclick="recordPurchase()">Record Purchase</button>
                 <button class="cancel" onclick="hideModal('purchaseModal')">Cancel</button>
             </div>
         </div>
@@ -1685,8 +1695,8 @@
     <div id="barcodeModal" class="modal">
         <div class="modal-content">
             <h3>📸 Scan Barcode</h3>
-            <div style="text-align: center; margin: 20px; padding: 40px; background: #f0f2f5; border-radius: 10px;">
-                <div style="font-size: 48px;">📷</div>
+            <div style="text-align:center; margin:20px; padding:40px; background:#f0f2f5; border-radius:10px;">
+                <div style="font-size:48px;">📷</div>
                 <p>Position barcode in frame</p>
             </div>
             <input type="text" id="barcodeInput" placeholder="Or enter barcode manually">
@@ -1699,9 +1709,9 @@
 
     <!-- Report Modal -->
     <div id="reportModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content" style="max-width:800px;">
             <h3 id="reportTitle">📊 Report</h3>
-            <div id="reportContent" style="max-height: 400px; overflow-y: auto; margin: 20px 0;"></div>
+            <div id="reportContent" style="max-height:400px; overflow-y:auto; margin:20px 0;"></div>
             <div class="modal-buttons">
                 <button class="save" onclick="exportReport()">📤 Export</button>
                 <button class="save" onclick="printReport()">🖨️ Print</button>
@@ -1731,31 +1741,6 @@
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <h3 id="confirmTitle">⚠️ Confirm Action</h3>
-            <p id="confirmMessage">Are you sure?</p>
-            <div class="modal-buttons">
-                <button class="save" onclick="confirmAction()">Yes</button>
-                <button class="cancel" onclick="hideModal('confirmModal')">No</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alert Modal -->
-    <div id="alertModal" class="modal">
-        <div class="modal-content">
-            <h3 id="alertTitle">📢 Alert</h3>
-            <p id="alertMessage"></p>
-            <div class="modal-buttons">
-                <button class="save" onclick="hideModal('alertModal')">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="database.js"></script>
+    <script src="databasetes.js"></script>
 </body>
-
 </html>
-
